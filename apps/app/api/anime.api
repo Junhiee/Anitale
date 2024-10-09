@@ -1,0 +1,41 @@
+syntax = "v1"
+
+import (
+	"base.api"
+)
+
+info (
+	title:   "番组信息"
+	desc:    "番组信息"
+	author:  "HUI"
+	email:   "2943452655@qq.com"
+	version: "1.0"
+)
+
+type (
+	Anime {
+		Title      string `json:"title"`
+		ImgURL     string `json:"img_url"`
+		Tag        string `json:"tag"`
+		UpdateTime int64  `json:"update_time"`
+	}
+	AnimeListReq {
+		Cursor   int64 `json:"page"`
+		PageSize int32 `form:"page_size,default=20"`
+	}
+	AnimeListResp {
+		Base
+		AnimeList  []*Anime `json:"anime_list"`
+		UpdateTime int64    `json:"update_time"`
+		IsEnd      bool     `json:"is_end"`
+	}
+)
+
+@server (
+	prefix: /v1
+	group:  anime
+)
+service Anime-api {
+	@handler GetAnimeList
+	post /anime (AnimeListReq) returns (AnimeListResp)
+}

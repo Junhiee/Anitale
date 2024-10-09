@@ -1,0 +1,21 @@
+Name: anime.rpc
+ListenOn: 0.0.0.0:8089
+# Etcd:
+#   Hosts:
+#     - 127.0.0.1:2379
+#   Key: anime.rpc
+Mysql:
+  Path: 127.0.0.1
+  # Port: "3306"
+  Dbname: anitale
+  Username: root
+  Password: "123456"
+  MaxIdleConns: 10
+  MaxOpenConns: 10
+  LogMode: "dev"
+  LogZap: false
+  Config: charset=utf8mb4&parseTime=True&loc=Local
+CacheRedis:
+  - Host: 127.0.0.1:6379
+    Pass:
+    Type: node

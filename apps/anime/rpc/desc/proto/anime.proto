@@ -1,0 +1,91 @@
+syntax = "proto3";
+
+package anime;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "/pb";
+
+message Anime {
+    int64 anime_id = 1;
+    string title = 2;
+    string desc = 3;
+    string country = 4;
+    string anime_type = 5;
+    string tag = 6;
+    string studios = 7;
+    string status = 8;
+    int64 rating = 9;
+    google.protobuf.Timestamp relase_date = 10;
+    google.protobuf.Timestamp update_date = 11;
+    google.protobuf.Timestamp updated_at = 12;
+    google.protobuf.Timestamp created_at = 13;
+}
+
+// 增加一条anime数据
+message AnimeAddReq {
+    string title = 1;
+    string desc = 2;
+    string country = 3;
+    string anime_type = 4;
+    string tag = 5;
+    string studios = 6;
+    string status = 7;
+    int64 rating = 8;
+    google.protobuf.Timestamp relase_date = 9;
+}
+
+message AnimeAddResp {
+    int64 anime_id = 1;
+}
+
+// 删除一条anime数据
+message AnimeDeleteReq {
+    int64 anime_id = 1;
+}
+
+message AnimeDeleteResp {
+    int64 anime_id = 1;
+}
+
+// 修改一条anime数据
+message AnimeUpdateReq {
+    int64 anime_id = 1;
+    string title = 2;
+    string desc = 3;
+    string country = 4;
+    string anime_type = 5;
+    string tag = 6;
+    string studios = 7;
+    string status = 8;
+    int64 rating = 9;
+    google.protobuf.Timestamp relase_date = 10;
+}
+
+message AnimeUpdateResp {
+    int64 anime_id = 1;
+}
+
+// 查询
+// 默认根据更新时间排序分页
+message AnimeListReq {
+    int64 page = 2;
+    int64 page_size = 3;
+    string tag = 4;
+    string anime_type = 5;
+    string country = 6;
+    google.protobuf.Timestamp relase_date = 7;
+    google.protobuf.Timestamp update_date = 8;
+}
+
+message AnimeListResp {
+  repeated Anime anime_list = 1;
+}
+
+
+service AnimeService {
+    rpc AnimeAdd(AnimeAddReq) returns (AnimeAddResp);
+    rpc AnimeDelete(AnimeDeleteReq) returns (AnimeDeleteResp);
+    rpc AnimeUpdate(AnimeUpdateReq) returns (AnimeUpdateResp);
+    rpc AnimeList(AnimeListReq) returns (AnimeListResp);
+}

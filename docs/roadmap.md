@@ -1,0 +1,7 @@
+- [x] gorm 基本、事务的使用
+- [x] 了解 grpc interceptor
+- [x] 了解 rpc 自定义错误码
+- [x] error pkg 的 Cause Wrapf 方法
+- [x] 了解 api 自定义错误码
+- [x] 初步完成 anime rpc 
+- [ ] 完成 anime api
