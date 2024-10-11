@@ -27,7 +27,7 @@ func main() {
 	ctx := svc.NewServiceContext(c)
 
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
-		pb.RegisterAnimeServiceServer(grpcServer, server.NewAnimeServiceServer(ctx))
+		pb.RegisterAnimeServer(grpcServer, server.NewAnimeServer(ctx))
 
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {
 			reflection.Register(grpcServer)
@@ -37,6 +37,7 @@ func main() {
 	// 错误处理
 	s.AddUnaryInterceptors(interceptor.LoggerInterceptor)
 	defer s.Stop()
+
 
 	fmt.Printf("Starting rpc server at %s...\n", c.ListenOn)
 	s.Start()

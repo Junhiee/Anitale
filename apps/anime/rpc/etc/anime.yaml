@@ -1,9 +1,12 @@
 Name: anime.rpc
-ListenOn: 0.0.0.0:8089
+ListenOn: 0.0.0.0:9001
+Mode: dev
+
 # Etcd:
 #   Hosts:
 #     - 127.0.0.1:2379
 #   Key: anime.rpc
+
 Mysql:
   Path: 127.0.0.1
   # Port: "3306"
@@ -15,7 +18,7 @@ Mysql:
   LogMode: "dev"
   LogZap: false
   Config: charset=utf8mb4&parseTime=True&loc=Local
+
 CacheRedis:
   - Host: 127.0.0.1:6379
-    Pass:
     Type: node

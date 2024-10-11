@@ -6,7 +6,7 @@ import "google/protobuf/timestamp.proto";
 
 option go_package = "/pb";
 
-message Anime {
+message Item {
     int64 anime_id = 1;
     string title = 2;
     string desc = 3;
@@ -79,13 +79,28 @@ message AnimeListReq {
 }
 
 message AnimeListResp {
-  repeated Anime anime_list = 1;
+  repeated Item anime_list = 1;
 }
 
 
-service AnimeService {
+// 多条件分页查询
+message PageByCondReq {
+    int64 page = 1;
+    int64 page_size = 2;
+    string tag = 3;
+    string anime_type = 4;
+    string country = 5;
+    google.protobuf.Timestamp relase_date = 6;
+}
+
+message PageByCondResp {
+  repeated Item anime_list = 1;
+}
+
+service Anime {
     rpc AnimeAdd(AnimeAddReq) returns (AnimeAddResp);
     rpc AnimeDelete(AnimeDeleteReq) returns (AnimeDeleteResp);
     rpc AnimeUpdate(AnimeUpdateReq) returns (AnimeUpdateResp);
     rpc AnimeList(AnimeListReq) returns (AnimeListResp);
+    rpc PageByCond(PageByCondReq) returns (PageByCondResp);
 }

@@ -19,215 +19,253 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	AnimeService_AnimeAdd_FullMethodName    = "/anime.AnimeService/AnimeAdd"
-	AnimeService_AnimeDelete_FullMethodName = "/anime.AnimeService/AnimeDelete"
-	AnimeService_AnimeUpdate_FullMethodName = "/anime.AnimeService/AnimeUpdate"
-	AnimeService_AnimeList_FullMethodName   = "/anime.AnimeService/AnimeList"
+	Anime_AnimeAdd_FullMethodName    = "/anime.Anime/AnimeAdd"
+	Anime_AnimeDelete_FullMethodName = "/anime.Anime/AnimeDelete"
+	Anime_AnimeUpdate_FullMethodName = "/anime.Anime/AnimeUpdate"
+	Anime_AnimeList_FullMethodName   = "/anime.Anime/AnimeList"
+	Anime_PageByCond_FullMethodName  = "/anime.Anime/PageByCond"
 )
 
-// AnimeServiceClient is the client API for AnimeService service.
+// AnimeClient is the client API for Anime service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type AnimeServiceClient interface {
+type AnimeClient interface {
 	AnimeAdd(ctx context.Context, in *AnimeAddReq, opts ...grpc.CallOption) (*AnimeAddResp, error)
 	AnimeDelete(ctx context.Context, in *AnimeDeleteReq, opts ...grpc.CallOption) (*AnimeDeleteResp, error)
 	AnimeUpdate(ctx context.Context, in *AnimeUpdateReq, opts ...grpc.CallOption) (*AnimeUpdateResp, error)
 	AnimeList(ctx context.Context, in *AnimeListReq, opts ...grpc.CallOption) (*AnimeListResp, error)
+	PageByCond(ctx context.Context, in *PageByCondReq, opts ...grpc.CallOption) (*PageByCondResp, error)
 }
 
-type animeServiceClient struct {
+type animeClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewAnimeServiceClient(cc grpc.ClientConnInterface) AnimeServiceClient {
-	return &animeServiceClient{cc}
+func NewAnimeClient(cc grpc.ClientConnInterface) AnimeClient {
+	return &animeClient{cc}
 }
 
-func (c *animeServiceClient) AnimeAdd(ctx context.Context, in *AnimeAddReq, opts ...grpc.CallOption) (*AnimeAddResp, error) {
+func (c *animeClient) AnimeAdd(ctx context.Context, in *AnimeAddReq, opts ...grpc.CallOption) (*AnimeAddResp, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(AnimeAddResp)
-	err := c.cc.Invoke(ctx, AnimeService_AnimeAdd_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, Anime_AnimeAdd_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *animeServiceClient) AnimeDelete(ctx context.Context, in *AnimeDeleteReq, opts ...grpc.CallOption) (*AnimeDeleteResp, error) {
+func (c *animeClient) AnimeDelete(ctx context.Context, in *AnimeDeleteReq, opts ...grpc.CallOption) (*AnimeDeleteResp, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(AnimeDeleteResp)
-	err := c.cc.Invoke(ctx, AnimeService_AnimeDelete_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, Anime_AnimeDelete_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *animeServiceClient) AnimeUpdate(ctx context.Context, in *AnimeUpdateReq, opts ...grpc.CallOption) (*AnimeUpdateResp, error) {
+func (c *animeClient) AnimeUpdate(ctx context.Context, in *AnimeUpdateReq, opts ...grpc.CallOption) (*AnimeUpdateResp, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(AnimeUpdateResp)
-	err := c.cc.Invoke(ctx, AnimeService_AnimeUpdate_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, Anime_AnimeUpdate_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *animeServiceClient) AnimeList(ctx context.Context, in *AnimeListReq, opts ...grpc.CallOption) (*AnimeListResp, error) {
+func (c *animeClient) AnimeList(ctx context.Context, in *AnimeListReq, opts ...grpc.CallOption) (*AnimeListResp, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(AnimeListResp)
-	err := c.cc.Invoke(ctx, AnimeService_AnimeList_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, Anime_AnimeList_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// AnimeServiceServer is the server API for AnimeService service.
-// All implementations must embed UnimplementedAnimeServiceServer
+func (c *animeClient) PageByCond(ctx context.Context, in *PageByCondReq, opts ...grpc.CallOption) (*PageByCondResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(PageByCondResp)
+	err := c.cc.Invoke(ctx, Anime_PageByCond_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// AnimeServer is the server API for Anime service.
+// All implementations must embed UnimplementedAnimeServer
 // for forward compatibility.
-type AnimeServiceServer interface {
+type AnimeServer interface {
 	AnimeAdd(context.Context, *AnimeAddReq) (*AnimeAddResp, error)
 	AnimeDelete(context.Context, *AnimeDeleteReq) (*AnimeDeleteResp, error)
 	AnimeUpdate(context.Context, *AnimeUpdateReq) (*AnimeUpdateResp, error)
 	AnimeList(context.Context, *AnimeListReq) (*AnimeListResp, error)
-	mustEmbedUnimplementedAnimeServiceServer()
+	PageByCond(context.Context, *PageByCondReq) (*PageByCondResp, error)
+	mustEmbedUnimplementedAnimeServer()
 }
 
-// UnimplementedAnimeServiceServer must be embedded to have
+// UnimplementedAnimeServer must be embedded to have
 // forward compatible implementations.
 //
 // NOTE: this should be embedded by value instead of pointer to avoid a nil
 // pointer dereference when methods are called.
-type UnimplementedAnimeServiceServer struct{}
+type UnimplementedAnimeServer struct{}
 
-func (UnimplementedAnimeServiceServer) AnimeAdd(context.Context, *AnimeAddReq) (*AnimeAddResp, error) {
+func (UnimplementedAnimeServer) AnimeAdd(context.Context, *AnimeAddReq) (*AnimeAddResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AnimeAdd not implemented")
 }
-func (UnimplementedAnimeServiceServer) AnimeDelete(context.Context, *AnimeDeleteReq) (*AnimeDeleteResp, error) {
+func (UnimplementedAnimeServer) AnimeDelete(context.Context, *AnimeDeleteReq) (*AnimeDeleteResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AnimeDelete not implemented")
 }
-func (UnimplementedAnimeServiceServer) AnimeUpdate(context.Context, *AnimeUpdateReq) (*AnimeUpdateResp, error) {
+func (UnimplementedAnimeServer) AnimeUpdate(context.Context, *AnimeUpdateReq) (*AnimeUpdateResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AnimeUpdate not implemented")
 }
-func (UnimplementedAnimeServiceServer) AnimeList(context.Context, *AnimeListReq) (*AnimeListResp, error) {
+func (UnimplementedAnimeServer) AnimeList(context.Context, *AnimeListReq) (*AnimeListResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AnimeList not implemented")
 }
-func (UnimplementedAnimeServiceServer) mustEmbedUnimplementedAnimeServiceServer() {}
-func (UnimplementedAnimeServiceServer) testEmbeddedByValue()                      {}
+func (UnimplementedAnimeServer) PageByCond(context.Context, *PageByCondReq) (*PageByCondResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PageByCond not implemented")
+}
+func (UnimplementedAnimeServer) mustEmbedUnimplementedAnimeServer() {}
+func (UnimplementedAnimeServer) testEmbeddedByValue()               {}
 
-// UnsafeAnimeServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to AnimeServiceServer will
+// UnsafeAnimeServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to AnimeServer will
 // result in compilation errors.
-type UnsafeAnimeServiceServer interface {
-	mustEmbedUnimplementedAnimeServiceServer()
+type UnsafeAnimeServer interface {
+	mustEmbedUnimplementedAnimeServer()
 }
 
-func RegisterAnimeServiceServer(s grpc.ServiceRegistrar, srv AnimeServiceServer) {
-	// If the following call pancis, it indicates UnimplementedAnimeServiceServer was
+func RegisterAnimeServer(s grpc.ServiceRegistrar, srv AnimeServer) {
+	// If the following call pancis, it indicates UnimplementedAnimeServer was
 	// embedded by pointer and is nil.  This will cause panics if an
 	// unimplemented method is ever invoked, so we test this at initialization
 	// time to prevent it from happening at runtime later due to I/O.
 	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
 		t.testEmbeddedByValue()
 	}
-	s.RegisterService(&AnimeService_ServiceDesc, srv)
+	s.RegisterService(&Anime_ServiceDesc, srv)
 }
 
-func _AnimeService_AnimeAdd_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Anime_AnimeAdd_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AnimeAddReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AnimeServiceServer).AnimeAdd(ctx, in)
+		return srv.(AnimeServer).AnimeAdd(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: AnimeService_AnimeAdd_FullMethodName,
+		FullMethod: Anime_AnimeAdd_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AnimeServiceServer).AnimeAdd(ctx, req.(*AnimeAddReq))
+		return srv.(AnimeServer).AnimeAdd(ctx, req.(*AnimeAddReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _AnimeService_AnimeDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Anime_AnimeDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AnimeDeleteReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AnimeServiceServer).AnimeDelete(ctx, in)
+		return srv.(AnimeServer).AnimeDelete(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: AnimeService_AnimeDelete_FullMethodName,
+		FullMethod: Anime_AnimeDelete_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AnimeServiceServer).AnimeDelete(ctx, req.(*AnimeDeleteReq))
+		return srv.(AnimeServer).AnimeDelete(ctx, req.(*AnimeDeleteReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _AnimeService_AnimeUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Anime_AnimeUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AnimeUpdateReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AnimeServiceServer).AnimeUpdate(ctx, in)
+		return srv.(AnimeServer).AnimeUpdate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: AnimeService_AnimeUpdate_FullMethodName,
+		FullMethod: Anime_AnimeUpdate_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AnimeServiceServer).AnimeUpdate(ctx, req.(*AnimeUpdateReq))
+		return srv.(AnimeServer).AnimeUpdate(ctx, req.(*AnimeUpdateReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _AnimeService_AnimeList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Anime_AnimeList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AnimeListReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AnimeServiceServer).AnimeList(ctx, in)
+		return srv.(AnimeServer).AnimeList(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: AnimeService_AnimeList_FullMethodName,
+		FullMethod: Anime_AnimeList_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AnimeServiceServer).AnimeList(ctx, req.(*AnimeListReq))
+		return srv.(AnimeServer).AnimeList(ctx, req.(*AnimeListReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// AnimeService_ServiceDesc is the grpc.ServiceDesc for AnimeService service.
+func _Anime_PageByCond_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PageByCondReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AnimeServer).PageByCond(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Anime_PageByCond_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AnimeServer).PageByCond(ctx, req.(*PageByCondReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// Anime_ServiceDesc is the grpc.ServiceDesc for Anime service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var AnimeService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "anime.AnimeService",
-	HandlerType: (*AnimeServiceServer)(nil),
+var Anime_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "anime.Anime",
+	HandlerType: (*AnimeServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "AnimeAdd",
-			Handler:    _AnimeService_AnimeAdd_Handler,
+			Handler:    _Anime_AnimeAdd_Handler,
 		},
 		{
 			MethodName: "AnimeDelete",
-			Handler:    _AnimeService_AnimeDelete_Handler,
+			Handler:    _Anime_AnimeDelete_Handler,
 		},
 		{
 			MethodName: "AnimeUpdate",
-			Handler:    _AnimeService_AnimeUpdate_Handler,
+			Handler:    _Anime_AnimeUpdate_Handler,
 		},
 		{
 			MethodName: "AnimeList",
-			Handler:    _AnimeService_AnimeList_Handler,
+			Handler:    _Anime_AnimeList_Handler,
+		},
+		{
+			MethodName: "PageByCond",
+			Handler:    _Anime_PageByCond_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

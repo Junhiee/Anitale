@@ -82,7 +82,7 @@ func (l *AnimeListLogic) AnimeList(in *pb.AnimeListReq) (*pb.AnimeListResp, erro
 	}
 
 	for _, item := range items {
-		resp.AnimeList = append(resp.AnimeList, &pb.Anime{
+		resp.AnimeList = append(resp.AnimeList, &pb.Item{
 			AnimeId:    item.AnimeId,
 			Title:      item.Title.String,
 			Desc:       item.Desc.String,

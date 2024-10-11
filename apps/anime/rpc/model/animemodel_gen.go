@@ -183,10 +183,10 @@ func (m *defaultAnimeModel) Transaction(ctx context.Context, fn func(db *gorm.DB
 	return m.TransactCtx(ctx, fn)
 }
 
-func (m *defaultAnimeModel) formatPrimary(primary interface{}) string {
-	return fmt.Sprintf("%s%v", cacheAnimeAnimeIdPrefix, primary)
-}
+// func (m *defaultAnimeModel) formatPrimary(primary interface{}) string {
+// 	return fmt.Sprintf("%s%v", cacheAnimeAnimeIdPrefix, primary)
+// }
 
-func (m *defaultAnimeModel) queryPrimary(conn *gorm.DB, v, primary interface{}) error {
-	return conn.Model(&Anime{}).Where("`anime_id` = ?", primary).Take(v).Error
-}
+// func (m *defaultAnimeModel) queryPrimary(conn *gorm.DB, v, primary interface{}) error {
+// 	return conn.Model(&Anime{}).Where("`anime_id` = ?", primary).Take(v).Error
+// }
