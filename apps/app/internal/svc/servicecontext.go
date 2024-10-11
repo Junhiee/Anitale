@@ -1,7 +1,7 @@
 package svc
 
 import (
-	"Anitale/apps/anime/rpc/animeclient"
+	"Anitale/apps/anime/rpc/anime"
 	"Anitale/apps/app/internal/config"
 
 	"github.com/zeromicro/go-zero/zrpc"
@@ -9,13 +9,13 @@ import (
 
 type ServiceContext struct {
 	Config   config.Config
-	AnimeRpc animeclient.Anime
+	AnimeRpc anime.Anime
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
 	return &ServiceContext{
 		Config: c,
-		AnimeRpc: animeclient.NewAnime(
+		AnimeRpc: anime.NewAnime(
 			zrpc.MustNewClient(c.AnimeRpcConf)),
 	}
 }

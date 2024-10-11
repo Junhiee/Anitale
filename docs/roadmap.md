@@ -5,5 +5,6 @@
 - [x] 了解 api 自定义错误码
 - [x] 初步完成 anime rpc
   - [ ] 完成多条件查询
-- [ ] 完成 anime api 与 rpc 交互
+- [x] 完成 anime api 与 rpc 交互
 - [ ] 完成 anime api
+

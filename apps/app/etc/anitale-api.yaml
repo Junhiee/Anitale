@@ -1,6 +1,6 @@
 Name: anitale-api
 Host: 0.0.0.0
-Port: 1001
+Port: 8001
 
 AnimeRpcConf:
   Endpoints:
