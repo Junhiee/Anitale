@@ -20,22 +20,15 @@ type (
 		UpdateTime int64  `json:"update_time"`
 	}
 	AnimeListReq {
-		Cursor   int64 `json:"page"`
-		PageSize int32 `form:"page_size,default=20"`
+		Page      int64  `json:"page,defaule=1"`
+		PageSize  int32  `form:"page_size,default=20"`
+		Country   string `json:"country,optional"`
+		Tag       string `json:"tag,optional"`
+		AnimeType string `json:"anime_type,optional"`
 	}
 	AnimeListResp {
 		Base
-		AnimeList  []*Anime `json:"anime_list"`
-		UpdateTime int64    `json:"update_time"`
-		IsEnd      bool     `json:"is_end"`
+		Data []*Anime `json:"data"`
 	}
 )
 
-@server (
-	prefix: /v1
-	group:  anime
-)
-service Anime-api {
-	@handler GetAnimeList
-	post /anime (AnimeListReq) returns (AnimeListResp)
-}
