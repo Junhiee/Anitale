@@ -16,7 +16,7 @@
   - tag 标签
   - anime_type 种类
   - region 国家
-  - relase_date 年份 - 季度
+  - season 年份 - 季度
   - update_date | update_time 按更新日期排序
   - TODO 按热度排序 后面做
 
@@ -29,5 +29,3 @@ type Base {
     // Data []*Data `json:"data"`
 }
 ```
-
-### 多条件查询
