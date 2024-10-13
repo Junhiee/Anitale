@@ -38,12 +38,8 @@ func (s *AnimeServer) AnimeUpdate(ctx context.Context, in *pb.AnimeUpdateReq) (*
 	return l.AnimeUpdate(in)
 }
 
+// 多条件分页查询
 func (s *AnimeServer) AnimeList(ctx context.Context, in *pb.AnimeListReq) (*pb.AnimeListResp, error) {
 	l := logic.NewAnimeListLogic(ctx, s.svcCtx)
 	return l.AnimeList(in)
-}
-
-func (s *AnimeServer) PageByCond(ctx context.Context, in *pb.PageByCondReq) (*pb.PageByCondResp, error) {
-	l := logic.NewPageByCondLogic(ctx, s.svcCtx)
-	return l.PageByCond(in)
 }
