@@ -39,19 +39,19 @@ type (
 	}
 
 	Anime struct {
-		AnimeId    int64          `gorm:"column:anime_id;primary_key"` // 主键
-		Title      sql.NullString `gorm:"column:title"`                // 标题
-		Desc       sql.NullString `gorm:"column:desc"`                 // 简介
-		Country    sql.NullString `gorm:"column:country"`              // 国家或地区
-		AnimeType  sql.NullString `gorm:"column:anime_type"`           // 动画种类
-		Tag        sql.NullString `gorm:"column:tag"`                  // 标签
-		Studios    sql.NullString `gorm:"column:studios"`              // 工作室
-		Status     sql.NullString `gorm:"column:status"`               // 动画状态
-		Rating     sql.NullInt64  `gorm:"column:rating"`               // 评分
-		RelaseDate sql.NullTime   `gorm:"column:relase_date"`          // 推出日期
-		UpdateDate sql.NullTime   `gorm:"column:update_date"`          // 更新日期
-		UpdatedAt  time.Time      `gorm:"column:updated_at"`           // 更新时间
-		CreatedAt  time.Time      `gorm:"column:created_at"`           // 创建时间
+		AnimeId     int64           `gorm:"column:anime_id;primary_key"` // 主键
+		Title       sql.NullString  `gorm:"column:title"`                // 标题
+		Desc        sql.NullString  `gorm:"column:desc"`                 // 简介
+		Region      sql.NullString  `gorm:"column:region"`               // 国家或地区
+		AnimeType   sql.NullString  `gorm:"column:anime_type"`           // 动画种类
+		ImgUrl      sql.NullString  `gorm:"column:img_url"`              // 图片地址
+		Studios     sql.NullString  `gorm:"column:studios"`              // 工作室
+		Status      sql.NullString  `gorm:"column:status"`               // 动画状态
+		Rating      sql.NullFloat64 `gorm:"column:rating"`               // 评分
+		ReleaseDate sql.NullTime    `gorm:"column:release_date"`         // 推出日期
+		UpdateDate  sql.NullTime    `gorm:"column:update_date"`          // 更新日期
+		UpdatedAt   time.Time       `gorm:"column:updated_at"`           // 更新时间
+		CreatedAt   time.Time       `gorm:"column:created_at"`           // 创建时间
 	}
 )
 
@@ -183,10 +183,10 @@ func (m *defaultAnimeModel) Transaction(ctx context.Context, fn func(db *gorm.DB
 	return m.TransactCtx(ctx, fn)
 }
 
-// func (m *defaultAnimeModel) formatPrimary(primary interface{}) string {
-// 	return fmt.Sprintf("%s%v", cacheAnimeAnimeIdPrefix, primary)
-// }
+func (m *defaultAnimeModel) formatPrimary(primary interface{}) string {
+	return fmt.Sprintf("%s%v", cacheAnimeAnimeIdPrefix, primary)
+}
 
-// func (m *defaultAnimeModel) queryPrimary(conn *gorm.DB, v, primary interface{}) error {
-// 	return conn.Model(&Anime{}).Where("`anime_id` = ?", primary).Take(v).Error
-// }
+func (m *defaultAnimeModel) queryPrimary(conn *gorm.DB, v, primary interface{}) error {
+	return conn.Model(&Anime{}).Where("`anime_id` = ?", primary).Take(v).Error
+}
