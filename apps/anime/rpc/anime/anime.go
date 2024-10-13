@@ -23,15 +23,13 @@ type (
 	AnimeUpdateReq  = pb.AnimeUpdateReq
 	AnimeUpdateResp = pb.AnimeUpdateResp
 	Item            = pb.Item
-	PageByCondReq   = pb.PageByCondReq
-	PageByCondResp  = pb.PageByCondResp
 
 	Anime interface {
 		AnimeAdd(ctx context.Context, in *AnimeAddReq, opts ...grpc.CallOption) (*AnimeAddResp, error)
 		AnimeDelete(ctx context.Context, in *AnimeDeleteReq, opts ...grpc.CallOption) (*AnimeDeleteResp, error)
 		AnimeUpdate(ctx context.Context, in *AnimeUpdateReq, opts ...grpc.CallOption) (*AnimeUpdateResp, error)
+		// 多条件分页查询
 		AnimeList(ctx context.Context, in *AnimeListReq, opts ...grpc.CallOption) (*AnimeListResp, error)
-		PageByCond(ctx context.Context, in *PageByCondReq, opts ...grpc.CallOption) (*PageByCondResp, error)
 	}
 
 	defaultAnime struct {
@@ -60,12 +58,8 @@ func (m *defaultAnime) AnimeUpdate(ctx context.Context, in *AnimeUpdateReq, opts
 	return client.AnimeUpdate(ctx, in, opts...)
 }
 
+// 多条件分页查询
 func (m *defaultAnime) AnimeList(ctx context.Context, in *AnimeListReq, opts ...grpc.CallOption) (*AnimeListResp, error) {
 	client := pb.NewAnimeClient(m.cli.Conn())
 	return client.AnimeList(ctx, in, opts...)
-}
-
-func (m *defaultAnime) PageByCond(ctx context.Context, in *PageByCondReq, opts ...grpc.CallOption) (*PageByCondResp, error) {
-	client := pb.NewAnimeClient(m.cli.Conn())
-	return client.PageByCond(ctx, in, opts...)
 }

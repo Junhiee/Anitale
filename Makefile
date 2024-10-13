@@ -1,5 +1,7 @@
 mysql:
-	goctl model mysql ddl -c --home ./.template/1.7.0/ --src ./apps/anime/rpc/desc/sql/anime.sql --dir ./apps/anime/rpc/model/ 
+	goctl model mysql ddl -c --home ./.template/1.7.0/ --src ./apps/anime/rpc/desc/sql/anime.sql --dir ./apps/anime/rpc/model/ \
+	goctl model mysql ddl -c --home ./.template/1.7.0/ --src ./apps/anime/rpc/desc/sql/tags.sql --dir ./apps/anime/rpc/model/ \
+	goctl model mysql ddl -c --home ./.template/1.7.0/ --src ./apps/anime/rpc/desc/sql/anime_tags.sql --dir ./apps/anime/rpc/model/ 
 
 api:
 	goctl api go -api ./apps/app/anitale.api -dir ./apps/app/

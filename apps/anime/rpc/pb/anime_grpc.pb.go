@@ -23,7 +23,6 @@ const (
 	Anime_AnimeDelete_FullMethodName = "/anime.Anime/AnimeDelete"
 	Anime_AnimeUpdate_FullMethodName = "/anime.Anime/AnimeUpdate"
 	Anime_AnimeList_FullMethodName   = "/anime.Anime/AnimeList"
-	Anime_PageByCond_FullMethodName  = "/anime.Anime/PageByCond"
 )
 
 // AnimeClient is the client API for Anime service.
@@ -33,8 +32,8 @@ type AnimeClient interface {
 	AnimeAdd(ctx context.Context, in *AnimeAddReq, opts ...grpc.CallOption) (*AnimeAddResp, error)
 	AnimeDelete(ctx context.Context, in *AnimeDeleteReq, opts ...grpc.CallOption) (*AnimeDeleteResp, error)
 	AnimeUpdate(ctx context.Context, in *AnimeUpdateReq, opts ...grpc.CallOption) (*AnimeUpdateResp, error)
+	// 多条件分页查询
 	AnimeList(ctx context.Context, in *AnimeListReq, opts ...grpc.CallOption) (*AnimeListResp, error)
-	PageByCond(ctx context.Context, in *PageByCondReq, opts ...grpc.CallOption) (*PageByCondResp, error)
 }
 
 type animeClient struct {
@@ -85,16 +84,6 @@ func (c *animeClient) AnimeList(ctx context.Context, in *AnimeListReq, opts ...g
 	return out, nil
 }
 
-func (c *animeClient) PageByCond(ctx context.Context, in *PageByCondReq, opts ...grpc.CallOption) (*PageByCondResp, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(PageByCondResp)
-	err := c.cc.Invoke(ctx, Anime_PageByCond_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // AnimeServer is the server API for Anime service.
 // All implementations must embed UnimplementedAnimeServer
 // for forward compatibility.
@@ -102,8 +91,8 @@ type AnimeServer interface {
 	AnimeAdd(context.Context, *AnimeAddReq) (*AnimeAddResp, error)
 	AnimeDelete(context.Context, *AnimeDeleteReq) (*AnimeDeleteResp, error)
 	AnimeUpdate(context.Context, *AnimeUpdateReq) (*AnimeUpdateResp, error)
+	// 多条件分页查询
 	AnimeList(context.Context, *AnimeListReq) (*AnimeListResp, error)
-	PageByCond(context.Context, *PageByCondReq) (*PageByCondResp, error)
 	mustEmbedUnimplementedAnimeServer()
 }
 
@@ -125,9 +114,6 @@ func (UnimplementedAnimeServer) AnimeUpdate(context.Context, *AnimeUpdateReq) (*
 }
 func (UnimplementedAnimeServer) AnimeList(context.Context, *AnimeListReq) (*AnimeListResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AnimeList not implemented")
-}
-func (UnimplementedAnimeServer) PageByCond(context.Context, *PageByCondReq) (*PageByCondResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method PageByCond not implemented")
 }
 func (UnimplementedAnimeServer) mustEmbedUnimplementedAnimeServer() {}
 func (UnimplementedAnimeServer) testEmbeddedByValue()               {}
@@ -222,24 +208,6 @@ func _Anime_AnimeList_Handler(srv interface{}, ctx context.Context, dec func(int
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Anime_PageByCond_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PageByCondReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AnimeServer).PageByCond(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Anime_PageByCond_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AnimeServer).PageByCond(ctx, req.(*PageByCondReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // Anime_ServiceDesc is the grpc.ServiceDesc for Anime service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -262,10 +230,6 @@ var Anime_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AnimeList",
 			Handler:    _Anime_AnimeList_Handler,
-		},
-		{
-			MethodName: "PageByCond",
-			Handler:    _Anime_PageByCond_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
