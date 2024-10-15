@@ -4,12 +4,12 @@ import (
 	"flag"
 	"fmt"
 
+	"github.com/zeromicro/go-zero/core/conf"
+	"github.com/zeromicro/go-zero/rest"
+
 	"Anitale/apps/app/internal/config"
 	"Anitale/apps/app/internal/handler"
 	"Anitale/apps/app/internal/svc"
-
-	"github.com/zeromicro/go-zero/core/conf"
-	"github.com/zeromicro/go-zero/rest"
 )
 
 var configFile = flag.String("f", "etc/anitale-api.yaml", "the config file")
