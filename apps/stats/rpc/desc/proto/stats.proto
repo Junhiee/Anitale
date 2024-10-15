@@ -1,0 +1,70 @@
+syntax = "proto3";
+
+package analytics;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "/pb";
+
+message Item {
+    int64 anime_id = 1;
+    int64 view_count = 2;
+    int64 like_count = 3;
+    int64 comment_count = 4;
+    int64 share_count = 5;
+    google.protobuf.Timestamp  last_updated = 6;
+}
+
+// 增加一条 stats 数据
+message AddStatsReq {
+    int64 anime_id = 1;
+    int64 view_count = 2;
+    int64 like_count = 3;
+    int64 comment_count = 4;
+    int64 share_count = 5;
+}
+
+message AddStatsResp {
+    int64 anime_id = 1;
+}
+
+// 删除一条 stats 数据
+message DeleteStatsReq {
+    int64 anime_id = 1;
+}
+
+message DeleteStatsResp {
+    int64 anime_id = 1;
+}
+
+// 修改一条 stats 数据
+message UpdateStatsReq {
+    int64 anime_id = 1;
+    int64 view_count = 2;
+    int64 like_count = 3;
+    int64 comment_count = 4;
+    int64 share_count = 5;
+}
+
+message UpdateStatsResp {
+    int64 anime_id = 1;
+    int64 view_count = 2;
+    int64 like_count = 3;
+    int64 comment_count = 4;
+    int64 share_count = 5;
+    google.protobuf.Timestamp  last_updated = 6;
+}
+
+// 按热度排序
+message SortByHotReq {
+    repeated int64 anime_ids = 1;
+}
+
+message SortByHotResp {
+    repeated int64 anime_ids = 1;
+}
+
+service stats {
+    // 按热度排序, 返回排序完成的 anime_id 列表
+    rpc SortByHot(SortByHotReq) returns (SortByHotResp);
+}
