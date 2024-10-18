@@ -1,58 +1,51 @@
-# 开发计划即日程
+# Kratos Project Template
 
-Anitale - 后端
+## Install Kratos
+```
+go install github.com/go-kratos/kratos/cmd/kratos/v2@latest
+```
+## Create a service
+```
+# Create a template project
+kratos new server
 
-Anitale-vue - 前端
+cd server
+# Add a proto template
+kratos proto add api/server/server.proto
+# Generate the proto code
+kratos proto client api/server/server.proto
+# Generate the source code of service by proto file
+kratos proto server api/server/server.proto -t internal/service
 
-Anispider - 数据采集
+go generate ./...
+go build -o ./bin/ ./...
+./bin/server -conf ./configs
+```
+## Generate other auxiliary files by Makefile
+```
+# Download and update dependencies
+make init
+# Generate API files (include: pb.go, http, grpc, validate, swagger) by proto file
+make api
+# Generate all files
+make all
+```
+## Automated Initialization (wire)
+```
+# install wire
+go get github.com/google/wire/cmd/wire
 
+# generate wire
+cd cmd/server
+wire
+```
 
+## Docker
+```bash
+# build
+docker build -t <your-docker-image-name> .
 
-- [x] 服务拆分 --- 2024/9/27
-  
-  - [x] 拆分首页需要的服务
-- [x] 部分数据库设计 --- 2024/9/28
-  
-  - [x] 设计首页需要的数据库表
-- [x] rpc api demo --- 2024/9/30
-  
-  - [x] 首页接口 demo 实现
-- [ ] 前后端首页交互demo完成 --- 2024/10/10 - 11/10
-  - [ ] 后端微服务相关技术栈学习 --- 2024/11/10
-    - [x] gorm 基本、事务的使用
-    - [x] 了解 grpc interceptor
-    - [x] 了解 rpc 自定义错误码
-    - [x] error pkg 的 Cause Wrapf 方法
-    - [x] 了解 api 自定义错误码
-    - [x] 初步完成 anime rpc
-      - [x] 了解实现多条件查询
-      - [x] 多条件语句查询
-    - [x] 完成 anime api 与 rpc 交互
-    - [ ] 完成 anime rpc 2024/10/11 - /10/13
-      - [x] 优化数据库表结构 10/11
-      - [x] 优化数据库查询语句 10/12
-      - [ ] 了解 Reids 缓存管理
-      - [ ] 将并发量大的数据由 CacheRedis 缓存管理
-      - [ ] 了解缓存一致性问题 - demo 实现
-      - [ ] 了解分布式事务 - demo 实现
-    - [ ] 完成 anime api 2024/10/11 - /10/13
-      - [ ] 定义好普通用户的第一版 `/v1/anime` api 接口
-      - [ ] 完成 code-msg 结构以及业务错误码封装
-    - [ ] 日志文件
-    - [ ] 消息队列 | 延迟队列
-      - [ ] kafka
-      - [ ] asynq
-- [ ] 前端知识学习 --- 2024/10/.*?
+# run
+docker run --rm -p 8000:8000 -p 9000:9000 -v </path/to/your/configs>:/data/conf <your-docker-image-name>
+```
 
-  - [ ] vue
-
-  - [ ] router
-
-  - [ ] pinia
-
-  - [ ] tailwind css daisyui
-- [ ] 完整的服务拆分和完整数据库设计 --- 2024/11/12
-- [ ] 根据服务拆分完成后端微服务开发 --- 2024/11/.*?
-- [ ] 微服务部署相关技术栈学习 --- 2024/12/.*?
-- [ ] 部署项目开发初步完成 --- 2024/12/30
-- [ ] .....
