@@ -23,8 +23,8 @@ func NewAnimeUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Anime
 	}
 }
 
-func (l *AnimeUpdateLogic) AnimeUpdate(in *pb.AnimeUpdateReq) (*pb.AnimeUpdateResp, error) {
+func (l *AnimeUpdateLogic) AnimeUpdate(in *pb.UpdateAnimeReq) (*pb.UpdateAnimeResp, error) {
 	// todo: add your logic here and delete this line
 
-	return &pb.AnimeUpdateResp{}, nil
+	return &pb.UpdateAnimeResp{}, nil
 }

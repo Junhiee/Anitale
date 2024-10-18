@@ -29,9 +29,9 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AnimeClient interface {
-	AnimeAdd(ctx context.Context, in *AnimeAddReq, opts ...grpc.CallOption) (*AnimeAddResp, error)
-	AnimeDelete(ctx context.Context, in *AnimeDeleteReq, opts ...grpc.CallOption) (*AnimeDeleteResp, error)
-	AnimeUpdate(ctx context.Context, in *AnimeUpdateReq, opts ...grpc.CallOption) (*AnimeUpdateResp, error)
+	AnimeAdd(ctx context.Context, in *AddAnimeReq, opts ...grpc.CallOption) (*AddAnimeResp, error)
+	AnimeDelete(ctx context.Context, in *DeleteAnimeReq, opts ...grpc.CallOption) (*DeleteAnimeResp, error)
+	AnimeUpdate(ctx context.Context, in *UpdateAnimeReq, opts ...grpc.CallOption) (*UpdateAnimeResp, error)
 	// 多条件分页查询
 	AnimeList(ctx context.Context, in *AnimeListReq, opts ...grpc.CallOption) (*AnimeListResp, error)
 }
@@ -44,9 +44,9 @@ func NewAnimeClient(cc grpc.ClientConnInterface) AnimeClient {
 	return &animeClient{cc}
 }
 
-func (c *animeClient) AnimeAdd(ctx context.Context, in *AnimeAddReq, opts ...grpc.CallOption) (*AnimeAddResp, error) {
+func (c *animeClient) AnimeAdd(ctx context.Context, in *AddAnimeReq, opts ...grpc.CallOption) (*AddAnimeResp, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(AnimeAddResp)
+	out := new(AddAnimeResp)
 	err := c.cc.Invoke(ctx, Anime_AnimeAdd_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -54,9 +54,9 @@ func (c *animeClient) AnimeAdd(ctx context.Context, in *AnimeAddReq, opts ...grp
 	return out, nil
 }
 
-func (c *animeClient) AnimeDelete(ctx context.Context, in *AnimeDeleteReq, opts ...grpc.CallOption) (*AnimeDeleteResp, error) {
+func (c *animeClient) AnimeDelete(ctx context.Context, in *DeleteAnimeReq, opts ...grpc.CallOption) (*DeleteAnimeResp, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(AnimeDeleteResp)
+	out := new(DeleteAnimeResp)
 	err := c.cc.Invoke(ctx, Anime_AnimeDelete_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -64,9 +64,9 @@ func (c *animeClient) AnimeDelete(ctx context.Context, in *AnimeDeleteReq, opts 
 	return out, nil
 }
 
-func (c *animeClient) AnimeUpdate(ctx context.Context, in *AnimeUpdateReq, opts ...grpc.CallOption) (*AnimeUpdateResp, error) {
+func (c *animeClient) AnimeUpdate(ctx context.Context, in *UpdateAnimeReq, opts ...grpc.CallOption) (*UpdateAnimeResp, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(AnimeUpdateResp)
+	out := new(UpdateAnimeResp)
 	err := c.cc.Invoke(ctx, Anime_AnimeUpdate_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -88,9 +88,9 @@ func (c *animeClient) AnimeList(ctx context.Context, in *AnimeListReq, opts ...g
 // All implementations must embed UnimplementedAnimeServer
 // for forward compatibility.
 type AnimeServer interface {
-	AnimeAdd(context.Context, *AnimeAddReq) (*AnimeAddResp, error)
-	AnimeDelete(context.Context, *AnimeDeleteReq) (*AnimeDeleteResp, error)
-	AnimeUpdate(context.Context, *AnimeUpdateReq) (*AnimeUpdateResp, error)
+	AnimeAdd(context.Context, *AddAnimeReq) (*AddAnimeResp, error)
+	AnimeDelete(context.Context, *DeleteAnimeReq) (*DeleteAnimeResp, error)
+	AnimeUpdate(context.Context, *UpdateAnimeReq) (*UpdateAnimeResp, error)
 	// 多条件分页查询
 	AnimeList(context.Context, *AnimeListReq) (*AnimeListResp, error)
 	mustEmbedUnimplementedAnimeServer()
@@ -103,13 +103,13 @@ type AnimeServer interface {
 // pointer dereference when methods are called.
 type UnimplementedAnimeServer struct{}
 
-func (UnimplementedAnimeServer) AnimeAdd(context.Context, *AnimeAddReq) (*AnimeAddResp, error) {
+func (UnimplementedAnimeServer) AnimeAdd(context.Context, *AddAnimeReq) (*AddAnimeResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AnimeAdd not implemented")
 }
-func (UnimplementedAnimeServer) AnimeDelete(context.Context, *AnimeDeleteReq) (*AnimeDeleteResp, error) {
+func (UnimplementedAnimeServer) AnimeDelete(context.Context, *DeleteAnimeReq) (*DeleteAnimeResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AnimeDelete not implemented")
 }
-func (UnimplementedAnimeServer) AnimeUpdate(context.Context, *AnimeUpdateReq) (*AnimeUpdateResp, error) {
+func (UnimplementedAnimeServer) AnimeUpdate(context.Context, *UpdateAnimeReq) (*UpdateAnimeResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AnimeUpdate not implemented")
 }
 func (UnimplementedAnimeServer) AnimeList(context.Context, *AnimeListReq) (*AnimeListResp, error) {
@@ -137,7 +137,7 @@ func RegisterAnimeServer(s grpc.ServiceRegistrar, srv AnimeServer) {
 }
 
 func _Anime_AnimeAdd_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AnimeAddReq)
+	in := new(AddAnimeReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -149,13 +149,13 @@ func _Anime_AnimeAdd_Handler(srv interface{}, ctx context.Context, dec func(inte
 		FullMethod: Anime_AnimeAdd_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AnimeServer).AnimeAdd(ctx, req.(*AnimeAddReq))
+		return srv.(AnimeServer).AnimeAdd(ctx, req.(*AddAnimeReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _Anime_AnimeDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AnimeDeleteReq)
+	in := new(DeleteAnimeReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -167,13 +167,13 @@ func _Anime_AnimeDelete_Handler(srv interface{}, ctx context.Context, dec func(i
 		FullMethod: Anime_AnimeDelete_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AnimeServer).AnimeDelete(ctx, req.(*AnimeDeleteReq))
+		return srv.(AnimeServer).AnimeDelete(ctx, req.(*DeleteAnimeReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _Anime_AnimeUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AnimeUpdateReq)
+	in := new(UpdateAnimeReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -185,7 +185,7 @@ func _Anime_AnimeUpdate_Handler(srv interface{}, ctx context.Context, dec func(i
 		FullMethod: Anime_AnimeUpdate_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AnimeServer).AnimeUpdate(ctx, req.(*AnimeUpdateReq))
+		return srv.(AnimeServer).AnimeUpdate(ctx, req.(*UpdateAnimeReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }

@@ -8,6 +8,7 @@ package pb
 
 import (
 	context "context"
+
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -26,7 +27,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type StatsClient interface {
-	// 按热度排序, 返回排序完成的 anime_id 列表
+	// 按热度排序, 返回排序完成的 anime 列表
 	SortByHot(ctx context.Context, in *SortByHotReq, opts ...grpc.CallOption) (*SortByHotResp, error)
 }
 
@@ -52,7 +53,7 @@ func (c *statsClient) SortByHot(ctx context.Context, in *SortByHotReq, opts ...g
 // All implementations must embed UnimplementedStatsServer
 // for forward compatibility.
 type StatsServer interface {
-	// 按热度排序, 返回排序完成的 anime_id 列表
+	// 按热度排序, 返回排序完成的 anime 列表
 	SortByHot(context.Context, *SortByHotReq) (*SortByHotResp, error)
 	mustEmbedUnimplementedStatsServer()
 }

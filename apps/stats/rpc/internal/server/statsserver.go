@@ -23,7 +23,7 @@ func NewStatsServer(svcCtx *svc.ServiceContext) *StatsServer {
 	}
 }
 
-// 按热度排序, 返回排序完成的 anime_id 列表
+// 按热度排序, 返回排序完成的 anime 列表
 func (s *StatsServer) SortByHot(ctx context.Context, in *pb.SortByHotReq) (*pb.SortByHotResp, error) {
 	l := logic.NewSortByHotLogic(ctx, s.svcCtx)
 	return l.SortByHot(in)

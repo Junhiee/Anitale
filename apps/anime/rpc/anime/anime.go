@@ -7,27 +7,27 @@ package anime
 import (
 	"context"
 
-	"Anitale/apps/anime/rpc/pb"
-
 	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"
+
+	"Anitale/apps/anime/rpc/pb"
 )
 
 type (
-	AnimeAddReq     = pb.AnimeAddReq
-	AnimeAddResp    = pb.AnimeAddResp
-	AnimeDeleteReq  = pb.AnimeDeleteReq
-	AnimeDeleteResp = pb.AnimeDeleteResp
+	AddAnimeReq     = pb.AddAnimeReq
+	AddAnimeResp    = pb.AddAnimeResp
 	AnimeListReq    = pb.AnimeListReq
 	AnimeListResp   = pb.AnimeListResp
-	AnimeUpdateReq  = pb.AnimeUpdateReq
-	AnimeUpdateResp = pb.AnimeUpdateResp
+	DeleteAnimeReq  = pb.DeleteAnimeReq
+	DeleteAnimeResp = pb.DeleteAnimeResp
 	Item            = pb.Item
+	UpdateAnimeReq  = pb.UpdateAnimeReq
+	UpdateAnimeResp = pb.UpdateAnimeResp
 
 	Anime interface {
-		AnimeAdd(ctx context.Context, in *AnimeAddReq, opts ...grpc.CallOption) (*AnimeAddResp, error)
-		AnimeDelete(ctx context.Context, in *AnimeDeleteReq, opts ...grpc.CallOption) (*AnimeDeleteResp, error)
-		AnimeUpdate(ctx context.Context, in *AnimeUpdateReq, opts ...grpc.CallOption) (*AnimeUpdateResp, error)
+		AnimeAdd(ctx context.Context, in *AddAnimeReq, opts ...grpc.CallOption) (*AddAnimeResp, error)
+		AnimeDelete(ctx context.Context, in *DeleteAnimeReq, opts ...grpc.CallOption) (*DeleteAnimeResp, error)
+		AnimeUpdate(ctx context.Context, in *UpdateAnimeReq, opts ...grpc.CallOption) (*UpdateAnimeResp, error)
 		// 多条件分页查询
 		AnimeList(ctx context.Context, in *AnimeListReq, opts ...grpc.CallOption) (*AnimeListResp, error)
 	}
@@ -43,17 +43,17 @@ func NewAnime(cli zrpc.Client) Anime {
 	}
 }
 
-func (m *defaultAnime) AnimeAdd(ctx context.Context, in *AnimeAddReq, opts ...grpc.CallOption) (*AnimeAddResp, error) {
+func (m *defaultAnime) AnimeAdd(ctx context.Context, in *AddAnimeReq, opts ...grpc.CallOption) (*AddAnimeResp, error) {
 	client := pb.NewAnimeClient(m.cli.Conn())
 	return client.AnimeAdd(ctx, in, opts...)
 }
 
-func (m *defaultAnime) AnimeDelete(ctx context.Context, in *AnimeDeleteReq, opts ...grpc.CallOption) (*AnimeDeleteResp, error) {
+func (m *defaultAnime) AnimeDelete(ctx context.Context, in *DeleteAnimeReq, opts ...grpc.CallOption) (*DeleteAnimeResp, error) {
 	client := pb.NewAnimeClient(m.cli.Conn())
 	return client.AnimeDelete(ctx, in, opts...)
 }
 
-func (m *defaultAnime) AnimeUpdate(ctx context.Context, in *AnimeUpdateReq, opts ...grpc.CallOption) (*AnimeUpdateResp, error) {
+func (m *defaultAnime) AnimeUpdate(ctx context.Context, in *UpdateAnimeReq, opts ...grpc.CallOption) (*UpdateAnimeResp, error) {
 	client := pb.NewAnimeClient(m.cli.Conn())
 	return client.AnimeUpdate(ctx, in, opts...)
 }

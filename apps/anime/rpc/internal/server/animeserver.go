@@ -23,17 +23,17 @@ func NewAnimeServer(svcCtx *svc.ServiceContext) *AnimeServer {
 	}
 }
 
-func (s *AnimeServer) AnimeAdd(ctx context.Context, in *pb.AnimeAddReq) (*pb.AnimeAddResp, error) {
+func (s *AnimeServer) AnimeAdd(ctx context.Context, in *pb.AddAnimeReq) (*pb.AddAnimeResp, error) {
 	l := logic.NewAnimeAddLogic(ctx, s.svcCtx)
 	return l.AnimeAdd(in)
 }
 
-func (s *AnimeServer) AnimeDelete(ctx context.Context, in *pb.AnimeDeleteReq) (*pb.AnimeDeleteResp, error) {
+func (s *AnimeServer) AnimeDelete(ctx context.Context, in *pb.DeleteAnimeReq) (*pb.DeleteAnimeResp, error) {
 	l := logic.NewAnimeDeleteLogic(ctx, s.svcCtx)
 	return l.AnimeDelete(in)
 }
 
-func (s *AnimeServer) AnimeUpdate(ctx context.Context, in *pb.AnimeUpdateReq) (*pb.AnimeUpdateResp, error) {
+func (s *AnimeServer) AnimeUpdate(ctx context.Context, in *pb.UpdateAnimeReq) (*pb.UpdateAnimeResp, error) {
 	l := logic.NewAnimeUpdateLogic(ctx, s.svcCtx)
 	return l.AnimeUpdate(in)
 }

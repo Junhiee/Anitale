@@ -23,7 +23,7 @@ message Item {
 }
 
 // 增加一条anime数据
-message AnimeAddReq {
+message AddAnimeReq {
     string title = 1;
     string desc = 2;
     string country = 3;
@@ -36,21 +36,21 @@ message AnimeAddReq {
     google.protobuf.Timestamp update_date = 10;
 }
 
-message AnimeAddResp {
+message AddAnimeResp {
     int64 anime_id = 1;
 }
 
 // 删除一条anime数据
-message AnimeDeleteReq {
+message DeleteAnimeReq {
     int64 anime_id = 1;
 }
 
-message AnimeDeleteResp {
+message DeleteAnimeResp {
     int64 anime_id = 1;
 }
 
 // 修改一条anime数据
-message AnimeUpdateReq {
+message UpdateAnimeReq {
     int64 anime_id = 1;
     string title = 2;
     string desc = 3;
@@ -64,7 +64,7 @@ message AnimeUpdateReq {
     google.protobuf.Timestamp update_date = 11;
 }
 
-message AnimeUpdateResp {
+message UpdateAnimeResp {
     int64 anime_id = 1;
 }
 
@@ -86,9 +86,9 @@ message AnimeListResp {
 }
 
 service Anime {
-    rpc AnimeAdd(AnimeAddReq) returns (AnimeAddResp);
-    rpc AnimeDelete(AnimeDeleteReq) returns (AnimeDeleteResp);
-    rpc AnimeUpdate(AnimeUpdateReq) returns (AnimeUpdateResp);
+    rpc AnimeAdd(AddAnimeReq) returns (AddAnimeResp);
+    rpc AnimeDelete(DeleteAnimeReq) returns (DeleteAnimeResp);
+    rpc AnimeUpdate(UpdateAnimeReq) returns (UpdateAnimeResp);
 
     // 多条件分页查询
     rpc AnimeList(AnimeListReq) returns (AnimeListResp);

@@ -1,6 +1,5 @@
 import (
 	"context"
-	"database/sql"
 	"errors"
 	"fmt"
 	{{if .time}}"time"{{end}}

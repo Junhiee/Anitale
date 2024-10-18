@@ -3,10 +3,10 @@ package logic
 import (
 	"context"
 
+	"github.com/zeromicro/go-zero/core/logx"
+
 	"Anitale/apps/anime/rpc/internal/svc"
 	"Anitale/apps/anime/rpc/pb"
-
-	"github.com/zeromicro/go-zero/core/logx"
 )
 
 type AnimeAddLogic struct {
@@ -23,8 +23,8 @@ func NewAnimeAddLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AnimeAdd
 	}
 }
 
-func (l *AnimeAddLogic) AnimeAdd(in *pb.AnimeAddReq) (*pb.AnimeAddResp, error) {
+func (l *AnimeAddLogic) AnimeAdd(in *pb.AddAnimeReq) (*pb.AddAnimeResp, error) {
 	// todo: add your logic here and delete this line
 
-	return &pb.AnimeAddResp{}, nil
+	return &pb.AddAnimeResp{}, nil
 }

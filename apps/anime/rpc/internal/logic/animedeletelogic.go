@@ -23,8 +23,8 @@ func NewAnimeDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Anime
 	}
 }
 
-func (l *AnimeDeleteLogic) AnimeDelete(in *pb.AnimeDeleteReq) (*pb.AnimeDeleteResp, error) {
+func (l *AnimeDeleteLogic) AnimeDelete(in *pb.DeleteAnimeReq) (*pb.DeleteAnimeResp, error) {
 	// todo: add your logic here and delete this line
 
-	return &pb.AnimeDeleteResp{}, nil
+	return &pb.DeleteAnimeResp{}, nil
 }

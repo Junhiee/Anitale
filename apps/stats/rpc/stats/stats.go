@@ -21,27 +21,28 @@ type (
 	Item            = pb.Item
 	SortByHotReq    = pb.SortByHotReq
 	SortByHotResp   = pb.SortByHotResp
+	Stats           = pb.Stats
 	UpdateStatsReq  = pb.UpdateStatsReq
 	UpdateStatsResp = pb.UpdateStatsResp
 
-	Stats interface {
-		// 按热度排序, 返回排序完成的 anime_id 列表
+	StatsZrpcClient interface {
+		// 按热度排序, 返回排序完成的 anime 列表
 		SortByHot(ctx context.Context, in *SortByHotReq, opts ...grpc.CallOption) (*SortByHotResp, error)
 	}
 
-	defaultStats struct {
+	defaultStatsZrpcClient struct {
 		cli zrpc.Client
 	}
 )
 
-func NewStats(cli zrpc.Client) Stats {
-	return &defaultStats{
+func NewStatsZrpcClient(cli zrpc.Client) StatsZrpcClient {
+	return &defaultStatsZrpcClient{
 		cli: cli,
 	}
 }
 
-// 按热度排序, 返回排序完成的 anime_id 列表
-func (m *defaultStats) SortByHot(ctx context.Context, in *SortByHotReq, opts ...grpc.CallOption) (*SortByHotResp, error) {
+// 按热度排序, 返回排序完成的 anime 列表
+func (m *defaultStatsZrpcClient) SortByHot(ctx context.Context, in *SortByHotReq, opts ...grpc.CallOption) (*SortByHotResp, error) {
 	client := pb.NewStatsClient(m.cli.Conn())
 	return client.SortByHot(ctx, in, opts...)
 }

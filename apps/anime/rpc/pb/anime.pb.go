@@ -7,11 +7,12 @@
 package pb
 
 import (
+	reflect "reflect"
+	sync "sync"
+
 	timestamp "github.com/golang/protobuf/ptypes/timestamp"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	reflect "reflect"
-	sync "sync"
 )
 
 const (
@@ -165,7 +166,7 @@ func (x *Item) GetCreatedAt() *timestamp.Timestamp {
 }
 
 // 增加一条anime数据
-type AnimeAddReq struct {
+type AddAnimeReq struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -182,8 +183,8 @@ type AnimeAddReq struct {
 	UpdateDate  *timestamp.Timestamp `protobuf:"bytes,10,opt,name=update_date,json=updateDate,proto3" json:"update_date,omitempty"`
 }
 
-func (x *AnimeAddReq) Reset() {
-	*x = AnimeAddReq{}
+func (x *AddAnimeReq) Reset() {
+	*x = AddAnimeReq{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_apps_anime_rpc_desc_proto_anime_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -191,13 +192,13 @@ func (x *AnimeAddReq) Reset() {
 	}
 }
 
-func (x *AnimeAddReq) String() string {
+func (x *AddAnimeReq) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AnimeAddReq) ProtoMessage() {}
+func (*AddAnimeReq) ProtoMessage() {}
 
-func (x *AnimeAddReq) ProtoReflect() protoreflect.Message {
+func (x *AddAnimeReq) ProtoReflect() protoreflect.Message {
 	mi := &file_apps_anime_rpc_desc_proto_anime_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -209,82 +210,82 @@ func (x *AnimeAddReq) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AnimeAddReq.ProtoReflect.Descriptor instead.
-func (*AnimeAddReq) Descriptor() ([]byte, []int) {
+// Deprecated: Use AddAnimeReq.ProtoReflect.Descriptor instead.
+func (*AddAnimeReq) Descriptor() ([]byte, []int) {
 	return file_apps_anime_rpc_desc_proto_anime_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AnimeAddReq) GetTitle() string {
+func (x *AddAnimeReq) GetTitle() string {
 	if x != nil {
 		return x.Title
 	}
 	return ""
 }
 
-func (x *AnimeAddReq) GetDesc() string {
+func (x *AddAnimeReq) GetDesc() string {
 	if x != nil {
 		return x.Desc
 	}
 	return ""
 }
 
-func (x *AnimeAddReq) GetCountry() string {
+func (x *AddAnimeReq) GetCountry() string {
 	if x != nil {
 		return x.Country
 	}
 	return ""
 }
 
-func (x *AnimeAddReq) GetAnimeType() string {
+func (x *AddAnimeReq) GetAnimeType() string {
 	if x != nil {
 		return x.AnimeType
 	}
 	return ""
 }
 
-func (x *AnimeAddReq) GetImgUrl() string {
+func (x *AddAnimeReq) GetImgUrl() string {
 	if x != nil {
 		return x.ImgUrl
 	}
 	return ""
 }
 
-func (x *AnimeAddReq) GetStudios() string {
+func (x *AddAnimeReq) GetStudios() string {
 	if x != nil {
 		return x.Studios
 	}
 	return ""
 }
 
-func (x *AnimeAddReq) GetStatus() string {
+func (x *AddAnimeReq) GetStatus() string {
 	if x != nil {
 		return x.Status
 	}
 	return ""
 }
 
-func (x *AnimeAddReq) GetRating() float64 {
+func (x *AddAnimeReq) GetRating() float64 {
 	if x != nil {
 		return x.Rating
 	}
 	return 0
 }
 
-func (x *AnimeAddReq) GetReleaseDate() *timestamp.Timestamp {
+func (x *AddAnimeReq) GetReleaseDate() *timestamp.Timestamp {
 	if x != nil {
 		return x.ReleaseDate
 	}
 	return nil
 }
 
-func (x *AnimeAddReq) GetUpdateDate() *timestamp.Timestamp {
+func (x *AddAnimeReq) GetUpdateDate() *timestamp.Timestamp {
 	if x != nil {
 		return x.UpdateDate
 	}
 	return nil
 }
 
-type AnimeAddResp struct {
+type AddAnimeResp struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -292,8 +293,8 @@ type AnimeAddResp struct {
 	AnimeId int64 `protobuf:"varint,1,opt,name=anime_id,json=animeId,proto3" json:"anime_id,omitempty"`
 }
 
-func (x *AnimeAddResp) Reset() {
-	*x = AnimeAddResp{}
+func (x *AddAnimeResp) Reset() {
+	*x = AddAnimeResp{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_apps_anime_rpc_desc_proto_anime_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -301,13 +302,13 @@ func (x *AnimeAddResp) Reset() {
 	}
 }
 
-func (x *AnimeAddResp) String() string {
+func (x *AddAnimeResp) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AnimeAddResp) ProtoMessage() {}
+func (*AddAnimeResp) ProtoMessage() {}
 
-func (x *AnimeAddResp) ProtoReflect() protoreflect.Message {
+func (x *AddAnimeResp) ProtoReflect() protoreflect.Message {
 	mi := &file_apps_anime_rpc_desc_proto_anime_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -319,12 +320,12 @@ func (x *AnimeAddResp) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AnimeAddResp.ProtoReflect.Descriptor instead.
-func (*AnimeAddResp) Descriptor() ([]byte, []int) {
+// Deprecated: Use AddAnimeResp.ProtoReflect.Descriptor instead.
+func (*AddAnimeResp) Descriptor() ([]byte, []int) {
 	return file_apps_anime_rpc_desc_proto_anime_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *AnimeAddResp) GetAnimeId() int64 {
+func (x *AddAnimeResp) GetAnimeId() int64 {
 	if x != nil {
 		return x.AnimeId
 	}
@@ -332,7 +333,7 @@ func (x *AnimeAddResp) GetAnimeId() int64 {
 }
 
 // 删除一条anime数据
-type AnimeDeleteReq struct {
+type DeleteAnimeReq struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -340,8 +341,8 @@ type AnimeDeleteReq struct {
 	AnimeId int64 `protobuf:"varint,1,opt,name=anime_id,json=animeId,proto3" json:"anime_id,omitempty"`
 }
 
-func (x *AnimeDeleteReq) Reset() {
-	*x = AnimeDeleteReq{}
+func (x *DeleteAnimeReq) Reset() {
+	*x = DeleteAnimeReq{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_apps_anime_rpc_desc_proto_anime_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -349,13 +350,13 @@ func (x *AnimeDeleteReq) Reset() {
 	}
 }
 
-func (x *AnimeDeleteReq) String() string {
+func (x *DeleteAnimeReq) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AnimeDeleteReq) ProtoMessage() {}
+func (*DeleteAnimeReq) ProtoMessage() {}
 
-func (x *AnimeDeleteReq) ProtoReflect() protoreflect.Message {
+func (x *DeleteAnimeReq) ProtoReflect() protoreflect.Message {
 	mi := &file_apps_anime_rpc_desc_proto_anime_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -367,19 +368,19 @@ func (x *AnimeDeleteReq) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AnimeDeleteReq.ProtoReflect.Descriptor instead.
-func (*AnimeDeleteReq) Descriptor() ([]byte, []int) {
+// Deprecated: Use DeleteAnimeReq.ProtoReflect.Descriptor instead.
+func (*DeleteAnimeReq) Descriptor() ([]byte, []int) {
 	return file_apps_anime_rpc_desc_proto_anime_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *AnimeDeleteReq) GetAnimeId() int64 {
+func (x *DeleteAnimeReq) GetAnimeId() int64 {
 	if x != nil {
 		return x.AnimeId
 	}
 	return 0
 }
 
-type AnimeDeleteResp struct {
+type DeleteAnimeResp struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -387,8 +388,8 @@ type AnimeDeleteResp struct {
 	AnimeId int64 `protobuf:"varint,1,opt,name=anime_id,json=animeId,proto3" json:"anime_id,omitempty"`
 }
 
-func (x *AnimeDeleteResp) Reset() {
-	*x = AnimeDeleteResp{}
+func (x *DeleteAnimeResp) Reset() {
+	*x = DeleteAnimeResp{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_apps_anime_rpc_desc_proto_anime_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -396,13 +397,13 @@ func (x *AnimeDeleteResp) Reset() {
 	}
 }
 
-func (x *AnimeDeleteResp) String() string {
+func (x *DeleteAnimeResp) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AnimeDeleteResp) ProtoMessage() {}
+func (*DeleteAnimeResp) ProtoMessage() {}
 
-func (x *AnimeDeleteResp) ProtoReflect() protoreflect.Message {
+func (x *DeleteAnimeResp) ProtoReflect() protoreflect.Message {
 	mi := &file_apps_anime_rpc_desc_proto_anime_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -414,12 +415,12 @@ func (x *AnimeDeleteResp) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AnimeDeleteResp.ProtoReflect.Descriptor instead.
-func (*AnimeDeleteResp) Descriptor() ([]byte, []int) {
+// Deprecated: Use DeleteAnimeResp.ProtoReflect.Descriptor instead.
+func (*DeleteAnimeResp) Descriptor() ([]byte, []int) {
 	return file_apps_anime_rpc_desc_proto_anime_proto_rawDescGZIP(), []int{4}
 }
 
-func (x *AnimeDeleteResp) GetAnimeId() int64 {
+func (x *DeleteAnimeResp) GetAnimeId() int64 {
 	if x != nil {
 		return x.AnimeId
 	}
@@ -427,7 +428,7 @@ func (x *AnimeDeleteResp) GetAnimeId() int64 {
 }
 
 // 修改一条anime数据
-type AnimeUpdateReq struct {
+type UpdateAnimeReq struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -445,8 +446,8 @@ type AnimeUpdateReq struct {
 	UpdateDate  *timestamp.Timestamp `protobuf:"bytes,11,opt,name=update_date,json=updateDate,proto3" json:"update_date,omitempty"`
 }
 
-func (x *AnimeUpdateReq) Reset() {
-	*x = AnimeUpdateReq{}
+func (x *UpdateAnimeReq) Reset() {
+	*x = UpdateAnimeReq{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_apps_anime_rpc_desc_proto_anime_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -454,13 +455,13 @@ func (x *AnimeUpdateReq) Reset() {
 	}
 }
 
-func (x *AnimeUpdateReq) String() string {
+func (x *UpdateAnimeReq) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AnimeUpdateReq) ProtoMessage() {}
+func (*UpdateAnimeReq) ProtoMessage() {}
 
-func (x *AnimeUpdateReq) ProtoReflect() protoreflect.Message {
+func (x *UpdateAnimeReq) ProtoReflect() protoreflect.Message {
 	mi := &file_apps_anime_rpc_desc_proto_anime_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -472,89 +473,89 @@ func (x *AnimeUpdateReq) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AnimeUpdateReq.ProtoReflect.Descriptor instead.
-func (*AnimeUpdateReq) Descriptor() ([]byte, []int) {
+// Deprecated: Use UpdateAnimeReq.ProtoReflect.Descriptor instead.
+func (*UpdateAnimeReq) Descriptor() ([]byte, []int) {
 	return file_apps_anime_rpc_desc_proto_anime_proto_rawDescGZIP(), []int{5}
 }
 
-func (x *AnimeUpdateReq) GetAnimeId() int64 {
+func (x *UpdateAnimeReq) GetAnimeId() int64 {
 	if x != nil {
 		return x.AnimeId
 	}
 	return 0
 }
 
-func (x *AnimeUpdateReq) GetTitle() string {
+func (x *UpdateAnimeReq) GetTitle() string {
 	if x != nil {
 		return x.Title
 	}
 	return ""
 }
 
-func (x *AnimeUpdateReq) GetDesc() string {
+func (x *UpdateAnimeReq) GetDesc() string {
 	if x != nil {
 		return x.Desc
 	}
 	return ""
 }
 
-func (x *AnimeUpdateReq) GetRegion() string {
+func (x *UpdateAnimeReq) GetRegion() string {
 	if x != nil {
 		return x.Region
 	}
 	return ""
 }
 
-func (x *AnimeUpdateReq) GetAnimeType() string {
+func (x *UpdateAnimeReq) GetAnimeType() string {
 	if x != nil {
 		return x.AnimeType
 	}
 	return ""
 }
 
-func (x *AnimeUpdateReq) GetImgUrl() string {
+func (x *UpdateAnimeReq) GetImgUrl() string {
 	if x != nil {
 		return x.ImgUrl
 	}
 	return ""
 }
 
-func (x *AnimeUpdateReq) GetStudios() string {
+func (x *UpdateAnimeReq) GetStudios() string {
 	if x != nil {
 		return x.Studios
 	}
 	return ""
 }
 
-func (x *AnimeUpdateReq) GetStatus() string {
+func (x *UpdateAnimeReq) GetStatus() string {
 	if x != nil {
 		return x.Status
 	}
 	return ""
 }
 
-func (x *AnimeUpdateReq) GetRating() float64 {
+func (x *UpdateAnimeReq) GetRating() float64 {
 	if x != nil {
 		return x.Rating
 	}
 	return 0
 }
 
-func (x *AnimeUpdateReq) GetReleaseDate() *timestamp.Timestamp {
+func (x *UpdateAnimeReq) GetReleaseDate() *timestamp.Timestamp {
 	if x != nil {
 		return x.ReleaseDate
 	}
 	return nil
 }
 
-func (x *AnimeUpdateReq) GetUpdateDate() *timestamp.Timestamp {
+func (x *UpdateAnimeReq) GetUpdateDate() *timestamp.Timestamp {
 	if x != nil {
 		return x.UpdateDate
 	}
 	return nil
 }
 
-type AnimeUpdateResp struct {
+type UpdateAnimeResp struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -562,8 +563,8 @@ type AnimeUpdateResp struct {
 	AnimeId int64 `protobuf:"varint,1,opt,name=anime_id,json=animeId,proto3" json:"anime_id,omitempty"`
 }
 
-func (x *AnimeUpdateResp) Reset() {
-	*x = AnimeUpdateResp{}
+func (x *UpdateAnimeResp) Reset() {
+	*x = UpdateAnimeResp{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_apps_anime_rpc_desc_proto_anime_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -571,13 +572,13 @@ func (x *AnimeUpdateResp) Reset() {
 	}
 }
 
-func (x *AnimeUpdateResp) String() string {
+func (x *UpdateAnimeResp) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AnimeUpdateResp) ProtoMessage() {}
+func (*UpdateAnimeResp) ProtoMessage() {}
 
-func (x *AnimeUpdateResp) ProtoReflect() protoreflect.Message {
+func (x *UpdateAnimeResp) ProtoReflect() protoreflect.Message {
 	mi := &file_apps_anime_rpc_desc_proto_anime_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -589,12 +590,12 @@ func (x *AnimeUpdateResp) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AnimeUpdateResp.ProtoReflect.Descriptor instead.
-func (*AnimeUpdateResp) Descriptor() ([]byte, []int) {
+// Deprecated: Use UpdateAnimeResp.ProtoReflect.Descriptor instead.
+func (*UpdateAnimeResp) Descriptor() ([]byte, []int) {
 	return file_apps_anime_rpc_desc_proto_anime_proto_rawDescGZIP(), []int{6}
 }
 
-func (x *AnimeUpdateResp) GetAnimeId() int64 {
+func (x *UpdateAnimeResp) GetAnimeId() int64 {
 	if x != nil {
 		return x.AnimeId
 	}
@@ -796,8 +797,8 @@ var file_apps_anime_rpc_desc_proto_anime_proto_rawDesc = []byte{
 	0x0a, 0x0a, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x64, 0x5f, 0x61, 0x74, 0x18, 0x0d, 0x20, 0x01,
 	0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74,
 	0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x52, 0x09,
-	0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x64, 0x41, 0x74, 0x22, 0xcf, 0x02, 0x0a, 0x0b, 0x41, 0x6e,
-	0x69, 0x6d, 0x65, 0x41, 0x64, 0x64, 0x52, 0x65, 0x71, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x69, 0x74,
+	0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x64, 0x41, 0x74, 0x22, 0xcf, 0x02, 0x0a, 0x0b, 0x41, 0x64,
+	0x64, 0x41, 0x6e, 0x69, 0x6d, 0x65, 0x52, 0x65, 0x71, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x69, 0x74,
 	0x6c, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x74, 0x69, 0x74, 0x6c, 0x65, 0x12,
 	0x12, 0x0a, 0x04, 0x64, 0x65, 0x73, 0x63, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x64,
 	0x65, 0x73, 0x63, 0x12, 0x18, 0x0a, 0x07, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x72, 0x79, 0x18, 0x03,
@@ -818,15 +819,15 @@ var file_apps_anime_rpc_desc_proto_anime_proto_rawDesc = []byte{
 	0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f,
 	0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x52,
 	0x0a, 0x75, 0x70, 0x64, 0x61, 0x74, 0x65, 0x44, 0x61, 0x74, 0x65, 0x22, 0x29, 0x0a, 0x0c, 0x41,
-	0x6e, 0x69, 0x6d, 0x65, 0x41, 0x64, 0x64, 0x52, 0x65, 0x73, 0x70, 0x12, 0x19, 0x0a, 0x08, 0x61,
+	0x64, 0x64, 0x41, 0x6e, 0x69, 0x6d, 0x65, 0x52, 0x65, 0x73, 0x70, 0x12, 0x19, 0x0a, 0x08, 0x61,
 	0x6e, 0x69, 0x6d, 0x65, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x07, 0x61,
-	0x6e, 0x69, 0x6d, 0x65, 0x49, 0x64, 0x22, 0x2b, 0x0a, 0x0e, 0x41, 0x6e, 0x69, 0x6d, 0x65, 0x44,
-	0x65, 0x6c, 0x65, 0x74, 0x65, 0x52, 0x65, 0x71, 0x12, 0x19, 0x0a, 0x08, 0x61, 0x6e, 0x69, 0x6d,
+	0x6e, 0x69, 0x6d, 0x65, 0x49, 0x64, 0x22, 0x2b, 0x0a, 0x0e, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65,
+	0x41, 0x6e, 0x69, 0x6d, 0x65, 0x52, 0x65, 0x71, 0x12, 0x19, 0x0a, 0x08, 0x61, 0x6e, 0x69, 0x6d,
 	0x65, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x07, 0x61, 0x6e, 0x69, 0x6d,
-	0x65, 0x49, 0x64, 0x22, 0x2c, 0x0a, 0x0f, 0x41, 0x6e, 0x69, 0x6d, 0x65, 0x44, 0x65, 0x6c, 0x65,
-	0x74, 0x65, 0x52, 0x65, 0x73, 0x70, 0x12, 0x19, 0x0a, 0x08, 0x61, 0x6e, 0x69, 0x6d, 0x65, 0x5f,
+	0x65, 0x49, 0x64, 0x22, 0x2c, 0x0a, 0x0f, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x41, 0x6e, 0x69,
+	0x6d, 0x65, 0x52, 0x65, 0x73, 0x70, 0x12, 0x19, 0x0a, 0x08, 0x61, 0x6e, 0x69, 0x6d, 0x65, 0x5f,
 	0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x07, 0x61, 0x6e, 0x69, 0x6d, 0x65, 0x49,
-	0x64, 0x22, 0xeb, 0x02, 0x0a, 0x0e, 0x41, 0x6e, 0x69, 0x6d, 0x65, 0x55, 0x70, 0x64, 0x61, 0x74,
+	0x64, 0x22, 0xeb, 0x02, 0x0a, 0x0e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x41, 0x6e, 0x69, 0x6d,
 	0x65, 0x52, 0x65, 0x71, 0x12, 0x19, 0x0a, 0x08, 0x61, 0x6e, 0x69, 0x6d, 0x65, 0x5f, 0x69, 0x64,
 	0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x07, 0x61, 0x6e, 0x69, 0x6d, 0x65, 0x49, 0x64, 0x12,
 	0x14, 0x0a, 0x05, 0x74, 0x69, 0x74, 0x6c, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05,
@@ -849,7 +850,7 @@ var file_apps_anime_rpc_desc_proto_anime_proto_rawDesc = []byte{
 	0x65, 0x18, 0x0b, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65,
 	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74,
 	0x61, 0x6d, 0x70, 0x52, 0x0a, 0x75, 0x70, 0x64, 0x61, 0x74, 0x65, 0x44, 0x61, 0x74, 0x65, 0x22,
-	0x2c, 0x0a, 0x0f, 0x41, 0x6e, 0x69, 0x6d, 0x65, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x52, 0x65,
+	0x2c, 0x0a, 0x0f, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x41, 0x6e, 0x69, 0x6d, 0x65, 0x52, 0x65,
 	0x73, 0x70, 0x12, 0x19, 0x0a, 0x08, 0x61, 0x6e, 0x69, 0x6d, 0x65, 0x5f, 0x69, 0x64, 0x18, 0x01,
 	0x20, 0x01, 0x28, 0x03, 0x52, 0x07, 0x61, 0x6e, 0x69, 0x6d, 0x65, 0x49, 0x64, 0x22, 0x89, 0x02,
 	0x0a, 0x0c, 0x41, 0x6e, 0x69, 0x6d, 0x65, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x71, 0x12, 0x12,
@@ -874,16 +875,16 @@ var file_apps_anime_rpc_desc_proto_anime_proto_rawDesc = []byte{
 	0x2e, 0x61, 0x6e, 0x69, 0x6d, 0x65, 0x2e, 0x49, 0x74, 0x65, 0x6d, 0x52, 0x09, 0x61, 0x6e, 0x69,
 	0x6d, 0x65, 0x4c, 0x69, 0x73, 0x74, 0x32, 0xf0, 0x01, 0x0a, 0x05, 0x41, 0x6e, 0x69, 0x6d, 0x65,
 	0x12, 0x33, 0x0a, 0x08, 0x41, 0x6e, 0x69, 0x6d, 0x65, 0x41, 0x64, 0x64, 0x12, 0x12, 0x2e, 0x61,
-	0x6e, 0x69, 0x6d, 0x65, 0x2e, 0x41, 0x6e, 0x69, 0x6d, 0x65, 0x41, 0x64, 0x64, 0x52, 0x65, 0x71,
-	0x1a, 0x13, 0x2e, 0x61, 0x6e, 0x69, 0x6d, 0x65, 0x2e, 0x41, 0x6e, 0x69, 0x6d, 0x65, 0x41, 0x64,
-	0x64, 0x52, 0x65, 0x73, 0x70, 0x12, 0x3c, 0x0a, 0x0b, 0x41, 0x6e, 0x69, 0x6d, 0x65, 0x44, 0x65,
-	0x6c, 0x65, 0x74, 0x65, 0x12, 0x15, 0x2e, 0x61, 0x6e, 0x69, 0x6d, 0x65, 0x2e, 0x41, 0x6e, 0x69,
-	0x6d, 0x65, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x52, 0x65, 0x71, 0x1a, 0x16, 0x2e, 0x61, 0x6e,
-	0x69, 0x6d, 0x65, 0x2e, 0x41, 0x6e, 0x69, 0x6d, 0x65, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x52,
+	0x6e, 0x69, 0x6d, 0x65, 0x2e, 0x41, 0x64, 0x64, 0x41, 0x6e, 0x69, 0x6d, 0x65, 0x52, 0x65, 0x71,
+	0x1a, 0x13, 0x2e, 0x61, 0x6e, 0x69, 0x6d, 0x65, 0x2e, 0x41, 0x64, 0x64, 0x41, 0x6e, 0x69, 0x6d,
+	0x65, 0x52, 0x65, 0x73, 0x70, 0x12, 0x3c, 0x0a, 0x0b, 0x41, 0x6e, 0x69, 0x6d, 0x65, 0x44, 0x65,
+	0x6c, 0x65, 0x74, 0x65, 0x12, 0x15, 0x2e, 0x61, 0x6e, 0x69, 0x6d, 0x65, 0x2e, 0x44, 0x65, 0x6c,
+	0x65, 0x74, 0x65, 0x41, 0x6e, 0x69, 0x6d, 0x65, 0x52, 0x65, 0x71, 0x1a, 0x16, 0x2e, 0x61, 0x6e,
+	0x69, 0x6d, 0x65, 0x2e, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x41, 0x6e, 0x69, 0x6d, 0x65, 0x52,
 	0x65, 0x73, 0x70, 0x12, 0x3c, 0x0a, 0x0b, 0x41, 0x6e, 0x69, 0x6d, 0x65, 0x55, 0x70, 0x64, 0x61,
-	0x74, 0x65, 0x12, 0x15, 0x2e, 0x61, 0x6e, 0x69, 0x6d, 0x65, 0x2e, 0x41, 0x6e, 0x69, 0x6d, 0x65,
-	0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x52, 0x65, 0x71, 0x1a, 0x16, 0x2e, 0x61, 0x6e, 0x69, 0x6d,
-	0x65, 0x2e, 0x41, 0x6e, 0x69, 0x6d, 0x65, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x52, 0x65, 0x73,
+	0x74, 0x65, 0x12, 0x15, 0x2e, 0x61, 0x6e, 0x69, 0x6d, 0x65, 0x2e, 0x55, 0x70, 0x64, 0x61, 0x74,
+	0x65, 0x41, 0x6e, 0x69, 0x6d, 0x65, 0x52, 0x65, 0x71, 0x1a, 0x16, 0x2e, 0x61, 0x6e, 0x69, 0x6d,
+	0x65, 0x2e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x41, 0x6e, 0x69, 0x6d, 0x65, 0x52, 0x65, 0x73,
 	0x70, 0x12, 0x36, 0x0a, 0x09, 0x41, 0x6e, 0x69, 0x6d, 0x65, 0x4c, 0x69, 0x73, 0x74, 0x12, 0x13,
 	0x2e, 0x61, 0x6e, 0x69, 0x6d, 0x65, 0x2e, 0x41, 0x6e, 0x69, 0x6d, 0x65, 0x4c, 0x69, 0x73, 0x74,
 	0x52, 0x65, 0x71, 0x1a, 0x14, 0x2e, 0x61, 0x6e, 0x69, 0x6d, 0x65, 0x2e, 0x41, 0x6e, 0x69, 0x6d,
@@ -906,12 +907,12 @@ func file_apps_anime_rpc_desc_proto_anime_proto_rawDescGZIP() []byte {
 var file_apps_anime_rpc_desc_proto_anime_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
 var file_apps_anime_rpc_desc_proto_anime_proto_goTypes = []any{
 	(*Item)(nil),                // 0: anime.Item
-	(*AnimeAddReq)(nil),         // 1: anime.AnimeAddReq
-	(*AnimeAddResp)(nil),        // 2: anime.AnimeAddResp
-	(*AnimeDeleteReq)(nil),      // 3: anime.AnimeDeleteReq
-	(*AnimeDeleteResp)(nil),     // 4: anime.AnimeDeleteResp
-	(*AnimeUpdateReq)(nil),      // 5: anime.AnimeUpdateReq
-	(*AnimeUpdateResp)(nil),     // 6: anime.AnimeUpdateResp
+	(*AddAnimeReq)(nil),         // 1: anime.AddAnimeReq
+	(*AddAnimeResp)(nil),        // 2: anime.AddAnimeResp
+	(*DeleteAnimeReq)(nil),      // 3: anime.DeleteAnimeReq
+	(*DeleteAnimeResp)(nil),     // 4: anime.DeleteAnimeResp
+	(*UpdateAnimeReq)(nil),      // 5: anime.UpdateAnimeReq
+	(*UpdateAnimeResp)(nil),     // 6: anime.UpdateAnimeResp
 	(*AnimeListReq)(nil),        // 7: anime.AnimeListReq
 	(*AnimeListResp)(nil),       // 8: anime.AnimeListResp
 	(*timestamp.Timestamp)(nil), // 9: google.protobuf.Timestamp
@@ -921,19 +922,19 @@ var file_apps_anime_rpc_desc_proto_anime_proto_depIdxs = []int32{
 	9,  // 1: anime.Item.update_date:type_name -> google.protobuf.Timestamp
 	9,  // 2: anime.Item.updated_at:type_name -> google.protobuf.Timestamp
 	9,  // 3: anime.Item.created_at:type_name -> google.protobuf.Timestamp
-	9,  // 4: anime.AnimeAddReq.release_date:type_name -> google.protobuf.Timestamp
-	9,  // 5: anime.AnimeAddReq.update_date:type_name -> google.protobuf.Timestamp
-	9,  // 6: anime.AnimeUpdateReq.release_date:type_name -> google.protobuf.Timestamp
-	9,  // 7: anime.AnimeUpdateReq.update_date:type_name -> google.protobuf.Timestamp
+	9,  // 4: anime.AddAnimeReq.release_date:type_name -> google.protobuf.Timestamp
+	9,  // 5: anime.AddAnimeReq.update_date:type_name -> google.protobuf.Timestamp
+	9,  // 6: anime.UpdateAnimeReq.release_date:type_name -> google.protobuf.Timestamp
+	9,  // 7: anime.UpdateAnimeReq.update_date:type_name -> google.protobuf.Timestamp
 	9,  // 8: anime.AnimeListReq.update_date:type_name -> google.protobuf.Timestamp
 	0,  // 9: anime.AnimeListResp.anime_list:type_name -> anime.Item
-	1,  // 10: anime.Anime.AnimeAdd:input_type -> anime.AnimeAddReq
-	3,  // 11: anime.Anime.AnimeDelete:input_type -> anime.AnimeDeleteReq
-	5,  // 12: anime.Anime.AnimeUpdate:input_type -> anime.AnimeUpdateReq
+	1,  // 10: anime.Anime.AnimeAdd:input_type -> anime.AddAnimeReq
+	3,  // 11: anime.Anime.AnimeDelete:input_type -> anime.DeleteAnimeReq
+	5,  // 12: anime.Anime.AnimeUpdate:input_type -> anime.UpdateAnimeReq
 	7,  // 13: anime.Anime.AnimeList:input_type -> anime.AnimeListReq
-	2,  // 14: anime.Anime.AnimeAdd:output_type -> anime.AnimeAddResp
-	4,  // 15: anime.Anime.AnimeDelete:output_type -> anime.AnimeDeleteResp
-	6,  // 16: anime.Anime.AnimeUpdate:output_type -> anime.AnimeUpdateResp
+	2,  // 14: anime.Anime.AnimeAdd:output_type -> anime.AddAnimeResp
+	4,  // 15: anime.Anime.AnimeDelete:output_type -> anime.DeleteAnimeResp
+	6,  // 16: anime.Anime.AnimeUpdate:output_type -> anime.UpdateAnimeResp
 	8,  // 17: anime.Anime.AnimeList:output_type -> anime.AnimeListResp
 	14, // [14:18] is the sub-list for method output_type
 	10, // [10:14] is the sub-list for method input_type
@@ -961,7 +962,7 @@ func file_apps_anime_rpc_desc_proto_anime_proto_init() {
 			}
 		}
 		file_apps_anime_rpc_desc_proto_anime_proto_msgTypes[1].Exporter = func(v any, i int) any {
-			switch v := v.(*AnimeAddReq); i {
+			switch v := v.(*AddAnimeReq); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -973,7 +974,7 @@ func file_apps_anime_rpc_desc_proto_anime_proto_init() {
 			}
 		}
 		file_apps_anime_rpc_desc_proto_anime_proto_msgTypes[2].Exporter = func(v any, i int) any {
-			switch v := v.(*AnimeAddResp); i {
+			switch v := v.(*AddAnimeResp); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -985,7 +986,7 @@ func file_apps_anime_rpc_desc_proto_anime_proto_init() {
 			}
 		}
 		file_apps_anime_rpc_desc_proto_anime_proto_msgTypes[3].Exporter = func(v any, i int) any {
-			switch v := v.(*AnimeDeleteReq); i {
+			switch v := v.(*DeleteAnimeReq); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -997,7 +998,7 @@ func file_apps_anime_rpc_desc_proto_anime_proto_init() {
 			}
 		}
 		file_apps_anime_rpc_desc_proto_anime_proto_msgTypes[4].Exporter = func(v any, i int) any {
-			switch v := v.(*AnimeDeleteResp); i {
+			switch v := v.(*DeleteAnimeResp); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1009,7 +1010,7 @@ func file_apps_anime_rpc_desc_proto_anime_proto_init() {
 			}
 		}
 		file_apps_anime_rpc_desc_proto_anime_proto_msgTypes[5].Exporter = func(v any, i int) any {
-			switch v := v.(*AnimeUpdateReq); i {
+			switch v := v.(*UpdateAnimeReq); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1021,7 +1022,7 @@ func file_apps_anime_rpc_desc_proto_anime_proto_init() {
 			}
 		}
 		file_apps_anime_rpc_desc_proto_anime_proto_msgTypes[6].Exporter = func(v any, i int) any {
-			switch v := v.(*AnimeUpdateResp); i {
+			switch v := v.(*UpdateAnimeResp); i {
 			case 0:
 				return &v.state
 			case 1:

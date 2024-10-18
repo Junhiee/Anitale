@@ -12,6 +12,9 @@
 
 - 分页查找
 - 搜索：搜索番剧名字
+  - [meilisearch](https://www.meilisearch.com/)
+  - [meilisearch-go](https://github.com/meilisearch/meilisearch-go?tab=readme-ov-file#-documentation)
+
 - 筛选
   - tag 标签
   - anime_type 种类
