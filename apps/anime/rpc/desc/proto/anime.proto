@@ -22,6 +22,15 @@ message Item {
     google.protobuf.Timestamp created_at = 13;
 }
 
+// 获得一条anime数据
+message GetAnimeReq {
+    int64 anime_id = 1;
+}
+
+message GetAnimeResp {
+    Item anime = 1;
+}
+
 // 增加一条anime数据
 message AddAnimeReq {
     string title = 1;
@@ -86,9 +95,10 @@ message AnimeListResp {
 }
 
 service Anime {
-    rpc AnimeAdd(AddAnimeReq) returns (AddAnimeResp);
-    rpc AnimeDelete(DeleteAnimeReq) returns (DeleteAnimeResp);
-    rpc AnimeUpdate(UpdateAnimeReq) returns (UpdateAnimeResp);
+    rpc GetAnime (GetAnimeReq) returns (GetAnimeResp);
+    rpc AddAnime(AddAnimeReq) returns (AddAnimeResp);
+    rpc DeleteAnime(DeleteAnimeReq) returns (DeleteAnimeResp);
+    rpc UpdateAnime(UpdateAnimeReq) returns (UpdateAnimeResp);
 
     // 多条件分页查询
     rpc AnimeList(AnimeListReq) returns (AnimeListResp);

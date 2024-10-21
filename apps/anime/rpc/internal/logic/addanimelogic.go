@@ -9,22 +9,22 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type AnimeUpdateLogic struct {
+type AddAnimeLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
 }
 
-func NewAnimeUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AnimeUpdateLogic {
-	return &AnimeUpdateLogic{
+func NewAddAnimeLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AddAnimeLogic {
+	return &AddAnimeLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
 	}
 }
 
-func (l *AnimeUpdateLogic) AnimeUpdate(in *pb.UpdateAnimeReq) (*pb.UpdateAnimeResp, error) {
+func (l *AddAnimeLogic) AddAnime(in *pb.AddAnimeReq) (*pb.AddAnimeResp, error) {
 	// todo: add your logic here and delete this line
 
-	return &pb.UpdateAnimeResp{}, nil
+	return &pb.AddAnimeResp{}, nil
 }

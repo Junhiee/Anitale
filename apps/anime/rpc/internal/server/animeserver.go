@@ -23,19 +23,24 @@ func NewAnimeServer(svcCtx *svc.ServiceContext) *AnimeServer {
 	}
 }
 
-func (s *AnimeServer) AnimeAdd(ctx context.Context, in *pb.AddAnimeReq) (*pb.AddAnimeResp, error) {
-	l := logic.NewAnimeAddLogic(ctx, s.svcCtx)
-	return l.AnimeAdd(in)
+func (s *AnimeServer) GetAnime(ctx context.Context, in *pb.GetAnimeReq) (*pb.GetAnimeResp, error) {
+	l := logic.NewGetAnimeLogic(ctx, s.svcCtx)
+	return l.GetAnime(in)
 }
 
-func (s *AnimeServer) AnimeDelete(ctx context.Context, in *pb.DeleteAnimeReq) (*pb.DeleteAnimeResp, error) {
-	l := logic.NewAnimeDeleteLogic(ctx, s.svcCtx)
-	return l.AnimeDelete(in)
+func (s *AnimeServer) AddAnime(ctx context.Context, in *pb.AddAnimeReq) (*pb.AddAnimeResp, error) {
+	l := logic.NewAddAnimeLogic(ctx, s.svcCtx)
+	return l.AddAnime(in)
 }
 
-func (s *AnimeServer) AnimeUpdate(ctx context.Context, in *pb.UpdateAnimeReq) (*pb.UpdateAnimeResp, error) {
-	l := logic.NewAnimeUpdateLogic(ctx, s.svcCtx)
-	return l.AnimeUpdate(in)
+func (s *AnimeServer) DeleteAnime(ctx context.Context, in *pb.DeleteAnimeReq) (*pb.DeleteAnimeResp, error) {
+	l := logic.NewDeleteAnimeLogic(ctx, s.svcCtx)
+	return l.DeleteAnime(in)
+}
+
+func (s *AnimeServer) UpdateAnime(ctx context.Context, in *pb.UpdateAnimeReq) (*pb.UpdateAnimeResp, error) {
+	l := logic.NewUpdateAnimeLogic(ctx, s.svcCtx)
+	return l.UpdateAnime(in)
 }
 
 // 多条件分页查询
