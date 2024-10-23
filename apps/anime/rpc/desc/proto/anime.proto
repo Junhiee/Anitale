@@ -87,7 +87,7 @@ message AnimeListReq {
     double rating = 7;
     int64 year = 8;
     int64 season = 9;
-    google.protobuf.Timestamp update_date = 10;
+    string sort = 10;
 }
 
 message AnimeListResp {

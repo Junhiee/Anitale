@@ -11,6 +11,7 @@ import (
 	"github.com/redis/go-redis/v9"
 	"github.com/zeromicro/go-zero/core/logx"
 	"google.golang.org/protobuf/types/known/timestamppb"
+	"gorm.io/gorm"
 
 	"Anitale/apps/anime/rpc/internal/svc"
 	"Anitale/apps/anime/rpc/model"
@@ -40,11 +41,15 @@ func (l *AnimeListLogic) AnimeList(in *pb.AnimeListReq) (*pb.AnimeListResp, erro
 		in.Page = 1
 		in.PageSize = 20
 	}
-	if in.Year == 0 {
-		in.Year = int64(time.Now().Year())
-	}
 
 	var resp = &pb.AnimeListResp{}
+	var items = []model.Anime{}
+	var err error
+
+	var (
+		start_date time.Time
+		end_date   time.Time
+	)
 
 	var anime_ids []int64
 	if in.Tag != "" {
@@ -65,33 +70,51 @@ func (l *AnimeListLogic) AnimeList(in *pb.AnimeListReq) (*pb.AnimeListResp, erro
 		}
 	}
 
-	// 查找符合季度的 anime
-	// 用户输入年份，返回该年份的所有季度的 anime
-	start_date, end_date, err := GetYearRange(int(in.Year))
-	if err != nil {
-		return nil, errors.Wrapf(errx.NewCustomError(errx.PARAM_ERROR, errx.GetMessage(errx.PARAM_ERROR)), "Func GetYearRange Err: %v", err)
-	}
-
-	// TODO 用户输入 季度 返回改季度的所有 anime
-
-	// 同时有年份和季度, 返回该年份下该季度的 anime
-	if in.Season != 0 {
-		start_date, end_date, err = GetSeasonRange(int(in.Year), int(in.Season))
-		if err != nil {
-			return nil, errors.Wrapf(errx.NewCustomError(errx.PARAM_ERROR, errx.GetMessage(errx.PARAM_ERROR)), "Func GetSeasonRange Err: %v", err)
-		}
-	}
-
 	// 查询条件
 	conditon := map[string]interface{}{
 		"region":     in.Region,
 		"anime_type": in.AnimeType,
-		"start_date": start_date,
-		"end_date":   end_date,
+	}
+
+	// 用户输入年份，返回该年份的所有季度的 anime
+	if in.Year != 0 && in.Season == 0 {
+		fmt.Println(" 用户输入年份，返回该年份的所有季度的 anime")
+		start_date, end_date, err = util.GetYearRange(int(in.Year))
+		if err != nil {
+			return nil, errors.Wrapf(errx.NewCustomError(errx.PARAM_ERROR, errx.GetMessage(errx.PARAM_ERROR)), "Func GetYearRange Err: %v", err)
+		}
+		conditon["start_date"] = start_date
+		conditon["end_date"] = end_date
+	}
+
+	// 用户输入某个季度 返回改季度的所有 anime
+	if in.Year == 0 && in.Season != 0 {
+		start_date, end_date, _ = util.GetSeasonRange(int(time.Now().Year()), int(in.Season))
+		conditon["start_month"] = start_date
+		conditon["end_month"] = end_date
+
+	}
+
+	// 同时有年份和季度, 返回该年份下该季度的 anime
+	if in.Year != 0 && in.Season != 0 {
+		fmt.Println("同时有年份和季度, 返回该年份下该季度的 anime", in.Year, in.Season)
+		start_date, end_date, err = util.GetSeasonRange(int(in.Year), int(in.Season))
+		if err != nil {
+			return nil, errors.Wrapf(errx.NewCustomError(errx.PARAM_ERROR, errx.GetMessage(errx.PARAM_ERROR)), "Func GetSeasonRange Err: %v", err)
+		}
+		conditon["start_date"] = start_date
+		conditon["end_date"] = end_date
 	}
 
 	// 查找符合条件的 anime
-	items, err := l.svcCtx.AnimeModel.PageByCond(l.ctx, conditon, in.Page, in.PageSize, anime_ids, nil)
+	err = l.svcCtx.Conn.Transaction(func(tx *gorm.DB) error {
+		items, err = l.svcCtx.AnimeModel.PageByCond(l.ctx, conditon, in.Page, in.PageSize, anime_ids, tx)
+		if err != nil {
+			return err
+		}
+		return nil
+	})
+
 	if err != nil {
 		return nil, errors.Wrapf(errx.NewCustomError(errx.DB_ERROR, errx.GetMessage(errx.DB_ERROR)), "Filter PageByCond Err: %v", err)
 	}
@@ -218,7 +241,7 @@ func (l *AnimeListLogic) AnimeList(in *pb.AnimeListReq) (*pb.AnimeListResp, erro
 		}
 
 	}
-	
+
 	for _, item := range items {
 		resp.AnimeList = append(resp.AnimeList, &pb.Item{
 			AnimeId:     item.AnimeId,
@@ -237,36 +260,6 @@ func (l *AnimeListLogic) AnimeList(in *pb.AnimeListReq) (*pb.AnimeListResp, erro
 		})
 	}
 	return resp, err
-}
-
-// 输入年份和季度,返回该年份下该季度的范围
-func GetSeasonRange(year int, season int) (time.Time, time.Time, error) {
-	switch season {
-	case 1:
-		return time.Date(year, time.January, 1, 0, 0, 0, 0, time.UTC),
-			time.Date(year, time.March, 31, 23, 59, 59, 0, time.UTC), nil
-	case 2:
-		return time.Date(year, time.April, 1, 0, 0, 0, 0, time.UTC),
-			time.Date(year, time.June, 30, 23, 59, 59, 0, time.UTC), nil
-	case 3:
-		return time.Date(year, time.July, 1, 0, 0, 0, 0, time.UTC),
-			time.Date(year, time.September, 30, 23, 59, 59, 0, time.UTC), nil
-	case 4:
-		return time.Date(year, time.October, 1, 0, 0, 0, 0, time.UTC),
-			time.Date(year, time.December, 31, 23, 59, 59, 0, time.UTC), nil
-	default:
-		return time.Time{}, time.Time{}, fmt.Errorf("无效的季度: %d", season)
-	}
-}
-
-func GetYearRange(year int) (time.Time, time.Time, error) {
-	nextYear := time.Now().AddDate(1, 0, 0).Year()
-	if year < 1900 || year > nextYear {
-		return time.Time{}, time.Time{}, fmt.Errorf("年份不合理，必须在 1900 到当前年份的后一年之间: %d", nextYear)
-	}
-
-	return time.Date(year, time.January, 1, 0, 0, 0, 0, time.UTC),
-		time.Date(year, time.December, 31, 23, 59, 59, 0, time.UTC), nil
 }
 
 // 计算热度值的函数，加入时间衰减因素

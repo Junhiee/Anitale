@@ -19,6 +19,14 @@ Mysql:
   LogZap: false
   Config: charset=utf8mb4&parseTime=True&loc=Local
 
-CacheRedis:
+CacheConf:
   - Host: 127.0.0.1:6379
+    Pass: ""
     Type: node
+    Tls: false
+
+RedisConf:
+  Host: 127.0.0.1:6379
+  Pass: ""
+  Type: node
+  Tls: false
