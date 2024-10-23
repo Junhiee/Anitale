@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package user;
+
+// import "google/protobuf/timestamp.proto";
+
+option go_package = "/pb";
+
+message Item {
+}
+
+// 获得一条anime数据
+message GetUserReq {
+}
+
+message GetUserResp {
+}
+
+
+service User {
+    rpc GetUser(GetUserReq) returns (GetUserResp);
+}
