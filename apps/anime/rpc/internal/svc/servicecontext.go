@@ -1,11 +1,14 @@
 package svc
 
 import (
-	"Anitale/apps/anime/rpc/internal/config"
-	"Anitale/apps/anime/rpc/model"
 	"log"
 
 	"github.com/SpectatorNan/gorm-zero/gormc/config/mysql"
+	"github.com/redis/go-redis/v9"
+	zredis "github.com/zeromicro/go-zero/core/stores/redis"
+
+	"Anitale/apps/anime/rpc/internal/config"
+	"Anitale/apps/anime/rpc/model"
 )
 
 type ServiceContext struct {
@@ -13,6 +16,9 @@ type ServiceContext struct {
 	AnimeModel     model.AnimeModel
 	AnimeTagsModel model.AnimeTagsModel
 	TagsModel      model.TagsModel
+	StatsModel     model.StatsModel
+	CacheClient    *zredis.Redis
+	RedisClient    *redis.Client
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -21,9 +27,15 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		log.Fatal(err)
 	}
 	return &ServiceContext{
-		Config:     c,
-		AnimeModel: model.NewAnimeModel(conn, c.CacheRedis),
-		AnimeTagsModel: model.NewAnimeTagsModel(conn, c.CacheRedis),
-		TagsModel: model.NewTagsModel(conn, c.CacheRedis),
+		Config:         c,
+		AnimeModel:     model.NewAnimeModel(conn, c.CacheConf),
+		AnimeTagsModel: model.NewAnimeTagsModel(conn, c.CacheConf),
+		TagsModel:      model.NewTagsModel(conn, c.CacheConf),
+		StatsModel:     model.NewStatsModel(conn, c.CacheConf),
+		CacheClient:    zredis.MustNewRedis(c.RedisConf),
+		RedisClient: redis.NewClient(&redis.Options{
+			Addr:     c.RedisConf.Host,
+			Password: c.RedisConf.Pass,
+			DB:       0}),
 	}
 }
