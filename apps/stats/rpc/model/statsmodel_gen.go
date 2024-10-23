@@ -43,7 +43,8 @@ type (
 		LikeCount    int64     `gorm:"column:like_count"`           // 点赞数量
 		CommentCount int64     `gorm:"column:comment_count"`        // 评论数量
 		ShareCount   int64     `gorm:"column:share_count"`          // 转发数量
-		LastUpdated  time.Time `gorm:"column:last_updated"`         // 最后更新时间
+		UpdatedAt    time.Time `gorm:"column:updated_at"`           // 更新时间
+		CreatedAt    time.Time `gorm:"column:created_at"`           // 创建时间
 	}
 )
 
