@@ -2,21 +2,138 @@ syntax = "proto3";
 
 package user;
 
-// import "google/protobuf/timestamp.proto";
-
 option go_package = "/pb";
 
-message Item {
+// 定义用户服务
+service UserService {
+  
+  // 用户注册
+  rpc RegisterUser (RegisterUserRequest) returns (RegisterUserResponse);
+
+  // 用户登录
+  rpc LoginUser (LoginUserRequest) returns (LoginUserResponse);
+
+  // 获取用户个人信息
+  rpc GetUserProfile (GetUserProfileRequest) returns (GetUserProfileResponse);
+
+  // 更新用户个人信息
+  rpc UpdateUserProfile (UpdateUserProfileRequest) returns (UpdateUserProfileResponse);
+
+  // 更新用户偏好设置
+  rpc UpdateUserPreferences (UpdateUserPreferencesRequest) returns (UpdateUserPreferencesResponse);
+
+  // 获取用户偏好设置
+  rpc GetUserPreferences (GetUserPreferencesRequest) returns (GetUserPreferencesResponse);
 }
 
-// 获得一条anime数据
-message GetUserReq {
+// 用户注册请求
+message RegisterUserRequest {
+  string username = 1;
+  string email = 2;
+  string password = 3;
 }
 
-message GetUserResp {
+// 用户注册响应
+message RegisterUserResponse {
+  bool success = 1;
+  string message = 2;
+  User user = 3; // 注册成功后返回用户信息
 }
 
+// 用户登录请求
+message LoginUserRequest {
+  string email = 1;
+  string password = 2;
+}
 
-service User {
-    rpc GetUser(GetUserReq) returns (GetUserResp);
+// 用户登录响应
+message LoginUserResponse {
+  bool success = 1;
+  string message = 2;
+  string access_token = 3;
+  string refresh_token = 4;
+}
+
+// 获取用户个人信息请求
+message GetUserProfileRequest {
+  uint64 user_id = 1;
+}
+
+// 获取用户个人信息响应
+message GetUserProfileResponse {
+  UserProfile profile = 1;
+}
+
+// 更新用户个人信息请求
+message UpdateUserProfileRequest {
+  uint64 user_id = 1;
+  string full_name = 2;
+  string bio = 3;
+  string avatar_url = 4;
+  string birthday = 5;
+  uint32 gender_id = 6; // 使用数字代替 ENUM
+}
+
+// 更新用户个人信息响应
+message UpdateUserProfileResponse {
+  bool success = 1;
+  string message = 2;
+  UserProfile profile = 3;
+}
+
+// 获取用户偏好设置请求
+message GetUserPreferencesRequest {
+  uint64 user_id = 1;
+}
+
+// 获取用户偏好设置响应
+message GetUserPreferencesResponse {
+  UserPreferences preferences = 1;
+}
+
+// 更新用户偏好设置请求
+message UpdateUserPreferencesRequest {
+  uint64 user_id = 1;
+  string lang = 2;
+  string timezone = 3;
+  bool receive_newsletter = 4;
+  bool receive_sms = 5;
+  bool receive_push = 6;
+}
+
+// 更新用户偏好设置响应
+message UpdateUserPreferencesResponse {
+  bool success = 1;
+  string message = 2;
+  UserPreferences preferences = 3;
+}
+
+// 用户信息
+message User {
+  uint64 id = 1;
+  string username = 2;
+  string email = 3;
+  bool is_active = 4;
+  bool is_verified = 5;
+}
+
+// 用户个人资料
+message UserProfile {
+  uint64 user_id = 1;
+  string full_name = 2;
+  string bio = 3;
+  string avatar_url = 4;
+  string birthday = 5;
+  uint32 gender_id = 6;
+  string loc = 7;
+}
+
+// 用户偏好设置
+message UserPreferences {
+  uint64 user_id = 1;
+  string lang = 2;
+  string timezone = 3;
+  bool receive_newsletter = 4;
+  bool receive_sms = 5;
+  bool receive_push = 6;
 }
