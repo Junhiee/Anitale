@@ -25,10 +25,10 @@ type (
 		Country   string `json:"country,optional"`
 		Tag       string `json:"tag,optional"`
 		AnimeType string `json:"anime_type,optional"`
+		Sort      string `json:"sort,defaule=time"`
 	}
 	AnimeListResp {
 		Base
 		Data []*Anime `json:"data"`
 	}
 )
-

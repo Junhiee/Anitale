@@ -21,7 +21,7 @@
   - region 国家
   - season 年份 - 季度
   - update_date | update_time 按更新日期排序
-  - TODO 按热度排序 后面做
+  - 按热度排序 后面做
 
 返回的基本格式
 

@@ -79,15 +79,17 @@ message UpdateAnimeResp {
 
 
 message AnimeListReq {
-    int64 page = 2;
-    int64 page_size = 3;
-    string tag = 4;
-    string anime_type = 5;
-    string region = 6;
-    double rating = 7;
-    int64 year = 8;
-    int64 season = 9;
-    string sort = 10;
+    int64 page = 1;
+    int64 page_size = 2;
+
+    string tag = 3;
+    string anime_type = 4;
+    string region = 5;
+    double rating = 6;
+    int64 year = 7;
+    int64 season = 8;
+    string sort = 9;
+    string sort_order = 10;
 }
 
 message AnimeListResp {

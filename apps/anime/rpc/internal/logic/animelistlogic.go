@@ -34,6 +34,7 @@ func NewAnimeListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AnimeLi
 	}
 }
 
+// FIXME 会有全表查询的情况，待优化
 func (l *AnimeListLogic) AnimeList(in *pb.AnimeListReq) (*pb.AnimeListResp, error) {
 
 	// 默认值
@@ -114,7 +115,6 @@ func (l *AnimeListLogic) AnimeList(in *pb.AnimeListReq) (*pb.AnimeListResp, erro
 		}
 		return nil
 	})
-
 	if err != nil {
 		return nil, errors.Wrapf(errx.NewCustomError(errx.DB_ERROR, errx.GetMessage(errx.DB_ERROR)), "Filter PageByCond Err: %v", err)
 	}
@@ -148,11 +148,10 @@ func (l *AnimeListLogic) AnimeList(in *pb.AnimeListReq) (*pb.AnimeListResp, erro
 			if cmd.Err() == redis.Nil {
 				// 从 hset 的 stats 集合中计算热力，并存储在 redis 的 zset 中
 				hcmd := l.svcCtx.RedisClient.HGetAll(l.ctx, "cache:stats:"+strconv.FormatInt(items[i].AnimeId, 10))
-
 				// 如果 hset 中也没有该 anime_id 的 stats 数据
 				// 则从数据库获取并同步更新 redis 中的 stats 数据
-				if hcmd.Err() == redis.Nil {
-					stats, err := l.svcCtx.StatsModel.FindOne(l.ctx, items[i].AnimeId)
+				if len(hcmd.Val()) == 0 {
+					stats, err := l.svcCtx.StatsModel.FindOneNoCacheCtx(l.ctx, items[i].AnimeId)
 					if err != nil {
 						return nil, errors.Wrapf(errx.NewCustomError(errx.DB_ERROR, errx.GetMessage(errx.DB_ERROR)), "StatsModel FindOne Err: %v", err)
 					}
@@ -162,10 +161,10 @@ func (l *AnimeListLogic) AnimeList(in *pb.AnimeListReq) (*pb.AnimeListResp, erro
 						"view_count":    stats.ViewCount,
 						"like_count":    stats.LikeCount,
 						"comment_count": stats.CommentCount,
+						"share_count":   stats.ShareCount,
 						"updated_at":    stats.UpdatedAt,
 					}
-
-					score := CalculateHeatValue(*stats, stats.UpdatedAt)
+					score := CalculateHeatValue(*stats, time.Now())
 
 					// 同步更新 redis 中的 stats 数据
 					l.svcCtx.RedisClient.HSet(l.ctx, "cache:stats:"+strconv.FormatInt(items[i].AnimeId, 10), m)
@@ -184,20 +183,21 @@ func (l *AnimeListLogic) AnimeList(in *pb.AnimeListReq) (*pb.AnimeListResp, erro
 				}
 
 				// 如果有 stats 数据
-				if hcmd.Err() != redis.Nil {
+				if len(hcmd.Val()) != 0 {
 
 					// 计算热力值
 					view_count, _ := strconv.Atoi(hcmd.Val()["view_count"])
 					like_count, _ := strconv.Atoi(hcmd.Val()["like_count"])
 					comment_count, _ := strconv.Atoi(hcmd.Val()["comment_count"])
 					share_count, _ := strconv.Atoi(hcmd.Val()["share_count"])
-
+					updated_at, _ := strconv.Atoi(hcmd.Val()["updated_at"])
 					score := CalculateHeatValue(model.Stats{
 						ViewCount:    int64(view_count),
 						LikeCount:    int64(like_count),
 						CommentCount: int64(comment_count),
 						ShareCount:   int64(share_count),
-					}, items[i].UpdatedAt)
+						CreatedAt:    time.Unix(int64(updated_at), 0),
+					}, time.Now())
 
 					// 存入redis中
 					l.svcCtx.RedisClient.ZAdd(l.ctx, "cache:hot:rank", redis.Z{
@@ -264,7 +264,7 @@ func (l *AnimeListLogic) AnimeList(in *pb.AnimeListReq) (*pb.AnimeListResp, erro
 
 // 计算热度值的函数，加入时间衰减因素
 func CalculateHeatValue(stats model.Stats, currentTime time.Time) float64 {
-	// 权重设置
+	// 权重设置（可根据实际情况调整）
 	viewWeight := 0.1
 	likeWeight := 0.2
 	commentWeight := 0.4
@@ -274,7 +274,13 @@ func CalculateHeatValue(stats model.Stats, currentTime time.Time) float64 {
 	halfLife := 7 * 24 * 60 * 60 // 7天的秒数
 
 	// 计算时间差（当前时间 - 创建时间），单位为秒
-	timeDifference := currentTime.Sub(stats.CreatedAt).Seconds()
+	timeDifference := currentTime.Sub(stats.UpdatedAt).Seconds()
+
+	// 限制最大时间差为一年的秒数，避免衰减因子过小
+	maxTimeDifference := 365 * 24 * 60 * 60 // 1年的秒数
+	if timeDifference > float64(maxTimeDifference) {
+		timeDifference = float64(maxTimeDifference)
+	}
 
 	// 计算时间衰减因子
 	decayFactor := math.Exp(-timeDifference / float64(halfLife))
