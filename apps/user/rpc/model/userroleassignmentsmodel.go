@@ -1,7 +1,6 @@
 package model
 
 import (
-	"github.com/zeromicro/go-zero/core/stores/cache"
 	"gorm.io/gorm"
 )
 
@@ -24,15 +23,8 @@ type (
 )
 
 // NewUserRoleAssignmentsModel returns a model for the database table.
-func NewUserRoleAssignmentsModel(conn *gorm.DB, c cache.CacheConf) UserRoleAssignmentsModel {
+func NewUserRoleAssignmentsModel(conn *gorm.DB) UserRoleAssignmentsModel {
 	return &customUserRoleAssignmentsModel{
-		defaultUserRoleAssignmentsModel: newUserRoleAssignmentsModel(conn, c),
+		defaultUserRoleAssignmentsModel: newUserRoleAssignmentsModel(conn),
 	}
-}
-
-func (m *defaultUserRoleAssignmentsModel) customCacheKeys(data *UserRoleAssignments) []string {
-	if data == nil {
-		return []string{}
-	}
-	return []string{}
 }

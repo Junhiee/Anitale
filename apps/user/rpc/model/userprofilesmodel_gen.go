@@ -5,18 +5,11 @@ package model
 import (
 	"database/sql"
 	"context"
-	"errors"
-	"fmt"
+	"github.com/SpectatorNan/gorm-zero/gormc"
+
 	"time"
 
-	"github.com/SpectatorNan/gorm-zero/gormc"
-	"github.com/SpectatorNan/gorm-zero/gormc/batchx"
-	"github.com/zeromicro/go-zero/core/stores/cache"
 	"gorm.io/gorm"
-)
-
-var (
-	cacheUserProfilesUserIdPrefix = "cache:userProfiles:userId:"
 )
 
 type (
@@ -34,7 +27,7 @@ type (
 	}
 
 	defaultUserProfilesModel struct {
-		gormc.CachedConn
+		conn  *gorm.DB
 		table string
 	}
 
@@ -55,55 +48,34 @@ func (UserProfiles) TableName() string {
 	return "`user_profiles`"
 }
 
-func newUserProfilesModel(conn *gorm.DB, c cache.CacheConf) *defaultUserProfilesModel {
+func newUserProfilesModel(conn *gorm.DB) *defaultUserProfilesModel {
 	return &defaultUserProfilesModel{
-		CachedConn: gormc.NewConn(conn, c),
-		table:      "`user_profiles`",
+		conn:  conn,
+		table: "`user_profiles`",
 	}
-}
-
-func (m *defaultUserProfilesModel) GetCacheKeys(data *UserProfiles) []string {
-	if data == nil {
-		return []string{}
-	}
-	userProfilesUserIdKey := fmt.Sprintf("%s%v", cacheUserProfilesUserIdPrefix, data.UserId)
-	cacheKeys := []string{
-		userProfilesUserIdKey,
-	}
-	cacheKeys = append(cacheKeys, m.customCacheKeys(data)...)
-	return cacheKeys
 }
 
 func (m *defaultUserProfilesModel) Insert(ctx context.Context, tx *gorm.DB, data *UserProfiles) error {
-
-	err := m.ExecCtx(ctx, func(conn *gorm.DB) error {
-		db := conn
-		if tx != nil {
-			db = tx
-		}
-		return db.Save(&data).Error
-	}, m.GetCacheKeys(data)...)
+	db := m.conn
+	if tx != nil {
+		db = tx
+	}
+	err := db.WithContext(ctx).Save(&data).Error
 	return err
 }
 func (m *defaultUserProfilesModel) BatchInsert(ctx context.Context, tx *gorm.DB, news []UserProfiles) error {
-
-	err := batchx.BatchExecCtx(ctx, m, news, func(conn *gorm.DB) error {
-		db := conn
-		if tx != nil {
-			db = tx
-		}
-		return db.Create(&news).Error
-	})
+	db := m.conn
+	if tx != nil {
+		db = tx
+	}
+	err := db.WithContext(ctx).Create(&news).Error
 
 	return err
 }
 
 func (m *defaultUserProfilesModel) FindOne(ctx context.Context, userId uint64) (*UserProfiles, error) {
-	userProfilesUserIdKey := fmt.Sprintf("%s%v", cacheUserProfilesUserIdPrefix, userId)
 	var resp UserProfiles
-	err := m.QueryCtx(ctx, &resp, userProfilesUserIdKey, func(conn *gorm.DB, v interface{}) error {
-		return conn.Model(&UserProfiles{}).Where("`user_id` = ?", userId).First(&resp).Error
-	})
+	err := m.conn.WithContext(ctx).Model(&UserProfiles{}).Where("`user_id` = ?", userId).Take(&resp).Error
 	switch err {
 	case nil:
 		return &resp, nil
@@ -115,74 +87,44 @@ func (m *defaultUserProfilesModel) FindOne(ctx context.Context, userId uint64) (
 }
 
 func (m *defaultUserProfilesModel) Update(ctx context.Context, tx *gorm.DB, data *UserProfiles) error {
-	old, err := m.FindOne(ctx, data.UserId)
-	if err != nil && errors.Is(err, ErrNotFound) {
-		return err
+	db := m.conn
+	if tx != nil {
+		db = tx
 	}
-	clearKeys := append(m.GetCacheKeys(old), m.GetCacheKeys(data)...)
-	err = m.ExecCtx(ctx, func(conn *gorm.DB) error {
-		db := conn
-		if tx != nil {
-			db = tx
-		}
-		return db.Save(data).Error
-	}, clearKeys...)
+	err := db.WithContext(ctx).Save(data).Error
 	return err
 }
 func (m *defaultUserProfilesModel) BatchUpdate(ctx context.Context, tx *gorm.DB, olds, news []UserProfiles) error {
-	clearData := make([]UserProfiles, 0, len(olds)+len(news))
-	clearData = append(clearData, olds...)
-	clearData = append(clearData, news...)
-	err := batchx.BatchExecCtx(ctx, m, clearData, func(conn *gorm.DB) error {
-		db := conn
-		if tx != nil {
-			db = tx
-		}
-		return db.Save(&news).Error
-	})
+	db := m.conn
+	if tx != nil {
+		db = tx
+	}
+	err := db.WithContext(ctx).Save(&news).Error
 
 	return err
 }
 
 func (m *defaultUserProfilesModel) Delete(ctx context.Context, tx *gorm.DB, userId uint64) error {
-	data, err := m.FindOne(ctx, userId)
-	if err != nil {
-		if errors.Is(err, ErrNotFound) {
-			return nil
-		}
-		return err
+	db := m.conn
+	if tx != nil {
+		db = tx
 	}
-	err = m.ExecCtx(ctx, func(conn *gorm.DB) error {
-		db := conn
-		if tx != nil {
-			db = tx
-		}
-		return db.Delete(&UserProfiles{}, userId).Error
-	}, m.GetCacheKeys(data)...)
+	err := db.WithContext(ctx).Delete(&UserProfiles{}, userId).Error
+
 	return err
 }
 
 func (m *defaultUserProfilesModel) BatchDelete(ctx context.Context, tx *gorm.DB, datas []UserProfiles) error {
-	err := batchx.BatchExecCtx(ctx, m, datas, func(conn *gorm.DB) error {
-		db := conn
-		if tx != nil {
-			db = tx
-		}
-		return db.Delete(&datas).Error
-	})
+	db := m.conn
+	if tx != nil {
+		db = tx
+	}
+	err := db.WithContext(ctx).Delete(&datas).Error
 
 	return err
 }
 
 // deprecated. recommend add a transaction in service context instead of using this
 func (m *defaultUserProfilesModel) Transaction(ctx context.Context, fn func(db *gorm.DB) error) error {
-	return m.TransactCtx(ctx, fn)
-}
-
-func (m *defaultUserProfilesModel) formatPrimary(primary interface{}) string {
-	return fmt.Sprintf("%s%v", cacheUserProfilesUserIdPrefix, primary)
-}
-
-func (m *defaultUserProfilesModel) queryPrimary(conn *gorm.DB, v, primary interface{}) error {
-	return conn.Model(&UserProfiles{}).Where("`user_id` = ?", primary).Take(v).Error
+	return m.conn.WithContext(ctx).Transaction(fn)
 }

@@ -1,7 +1,6 @@
 package model
 
 import (
-	"github.com/zeromicro/go-zero/core/stores/cache"
 	"gorm.io/gorm"
 )
 
@@ -24,15 +23,8 @@ type (
 )
 
 // NewUserProfilesModel returns a model for the database table.
-func NewUserProfilesModel(conn *gorm.DB, c cache.CacheConf) UserProfilesModel {
+func NewUserProfilesModel(conn *gorm.DB) UserProfilesModel {
 	return &customUserProfilesModel{
-		defaultUserProfilesModel: newUserProfilesModel(conn, c),
+		defaultUserProfilesModel: newUserProfilesModel(conn),
 	}
-}
-
-func (m *defaultUserProfilesModel) customCacheKeys(data *UserProfiles) []string {
-	if data == nil {
-		return []string{}
-	}
-	return []string{}
 }

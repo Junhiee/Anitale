@@ -1,7 +1,6 @@
 package model
 
 import (
-	"github.com/zeromicro/go-zero/core/stores/cache"
 	"gorm.io/gorm"
 )
 
@@ -24,15 +23,8 @@ type (
 )
 
 // NewUserTokensModel returns a model for the database table.
-func NewUserTokensModel(conn *gorm.DB, c cache.CacheConf) UserTokensModel {
+func NewUserTokensModel(conn *gorm.DB) UserTokensModel {
 	return &customUserTokensModel{
-		defaultUserTokensModel: newUserTokensModel(conn, c),
+		defaultUserTokensModel: newUserTokensModel(conn),
 	}
-}
-
-func (m *defaultUserTokensModel) customCacheKeys(data *UserTokens) []string {
-	if data == nil {
-		return []string{}
-	}
-	return []string{}
 }

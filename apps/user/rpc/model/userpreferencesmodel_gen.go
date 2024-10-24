@@ -4,18 +4,11 @@ package model
 
 import (
 	"context"
-	"errors"
-	"fmt"
+	"github.com/SpectatorNan/gorm-zero/gormc"
+
 	"time"
 
-	"github.com/SpectatorNan/gorm-zero/gormc"
-	"github.com/SpectatorNan/gorm-zero/gormc/batchx"
-	"github.com/zeromicro/go-zero/core/stores/cache"
 	"gorm.io/gorm"
-)
-
-var (
-	cacheUserPreferencesUserIdPrefix = "cache:userPreferences:userId:"
 )
 
 type (
@@ -33,7 +26,7 @@ type (
 	}
 
 	defaultUserPreferencesModel struct {
-		gormc.CachedConn
+		conn  *gorm.DB
 		table string
 	}
 
@@ -53,55 +46,34 @@ func (UserPreferences) TableName() string {
 	return "`user_preferences`"
 }
 
-func newUserPreferencesModel(conn *gorm.DB, c cache.CacheConf) *defaultUserPreferencesModel {
+func newUserPreferencesModel(conn *gorm.DB) *defaultUserPreferencesModel {
 	return &defaultUserPreferencesModel{
-		CachedConn: gormc.NewConn(conn, c),
-		table:      "`user_preferences`",
+		conn:  conn,
+		table: "`user_preferences`",
 	}
-}
-
-func (m *defaultUserPreferencesModel) GetCacheKeys(data *UserPreferences) []string {
-	if data == nil {
-		return []string{}
-	}
-	userPreferencesUserIdKey := fmt.Sprintf("%s%v", cacheUserPreferencesUserIdPrefix, data.UserId)
-	cacheKeys := []string{
-		userPreferencesUserIdKey,
-	}
-	cacheKeys = append(cacheKeys, m.customCacheKeys(data)...)
-	return cacheKeys
 }
 
 func (m *defaultUserPreferencesModel) Insert(ctx context.Context, tx *gorm.DB, data *UserPreferences) error {
-
-	err := m.ExecCtx(ctx, func(conn *gorm.DB) error {
-		db := conn
-		if tx != nil {
-			db = tx
-		}
-		return db.Save(&data).Error
-	}, m.GetCacheKeys(data)...)
+	db := m.conn
+	if tx != nil {
+		db = tx
+	}
+	err := db.WithContext(ctx).Save(&data).Error
 	return err
 }
 func (m *defaultUserPreferencesModel) BatchInsert(ctx context.Context, tx *gorm.DB, news []UserPreferences) error {
-
-	err := batchx.BatchExecCtx(ctx, m, news, func(conn *gorm.DB) error {
-		db := conn
-		if tx != nil {
-			db = tx
-		}
-		return db.Create(&news).Error
-	})
+	db := m.conn
+	if tx != nil {
+		db = tx
+	}
+	err := db.WithContext(ctx).Create(&news).Error
 
 	return err
 }
 
 func (m *defaultUserPreferencesModel) FindOne(ctx context.Context, userId uint64) (*UserPreferences, error) {
-	userPreferencesUserIdKey := fmt.Sprintf("%s%v", cacheUserPreferencesUserIdPrefix, userId)
 	var resp UserPreferences
-	err := m.QueryCtx(ctx, &resp, userPreferencesUserIdKey, func(conn *gorm.DB, v interface{}) error {
-		return conn.Model(&UserPreferences{}).Where("`user_id` = ?", userId).First(&resp).Error
-	})
+	err := m.conn.WithContext(ctx).Model(&UserPreferences{}).Where("`user_id` = ?", userId).Take(&resp).Error
 	switch err {
 	case nil:
 		return &resp, nil
@@ -113,74 +85,44 @@ func (m *defaultUserPreferencesModel) FindOne(ctx context.Context, userId uint64
 }
 
 func (m *defaultUserPreferencesModel) Update(ctx context.Context, tx *gorm.DB, data *UserPreferences) error {
-	old, err := m.FindOne(ctx, data.UserId)
-	if err != nil && errors.Is(err, ErrNotFound) {
-		return err
+	db := m.conn
+	if tx != nil {
+		db = tx
 	}
-	clearKeys := append(m.GetCacheKeys(old), m.GetCacheKeys(data)...)
-	err = m.ExecCtx(ctx, func(conn *gorm.DB) error {
-		db := conn
-		if tx != nil {
-			db = tx
-		}
-		return db.Save(data).Error
-	}, clearKeys...)
+	err := db.WithContext(ctx).Save(data).Error
 	return err
 }
 func (m *defaultUserPreferencesModel) BatchUpdate(ctx context.Context, tx *gorm.DB, olds, news []UserPreferences) error {
-	clearData := make([]UserPreferences, 0, len(olds)+len(news))
-	clearData = append(clearData, olds...)
-	clearData = append(clearData, news...)
-	err := batchx.BatchExecCtx(ctx, m, clearData, func(conn *gorm.DB) error {
-		db := conn
-		if tx != nil {
-			db = tx
-		}
-		return db.Save(&news).Error
-	})
+	db := m.conn
+	if tx != nil {
+		db = tx
+	}
+	err := db.WithContext(ctx).Save(&news).Error
 
 	return err
 }
 
 func (m *defaultUserPreferencesModel) Delete(ctx context.Context, tx *gorm.DB, userId uint64) error {
-	data, err := m.FindOne(ctx, userId)
-	if err != nil {
-		if errors.Is(err, ErrNotFound) {
-			return nil
-		}
-		return err
+	db := m.conn
+	if tx != nil {
+		db = tx
 	}
-	err = m.ExecCtx(ctx, func(conn *gorm.DB) error {
-		db := conn
-		if tx != nil {
-			db = tx
-		}
-		return db.Delete(&UserPreferences{}, userId).Error
-	}, m.GetCacheKeys(data)...)
+	err := db.WithContext(ctx).Delete(&UserPreferences{}, userId).Error
+
 	return err
 }
 
 func (m *defaultUserPreferencesModel) BatchDelete(ctx context.Context, tx *gorm.DB, datas []UserPreferences) error {
-	err := batchx.BatchExecCtx(ctx, m, datas, func(conn *gorm.DB) error {
-		db := conn
-		if tx != nil {
-			db = tx
-		}
-		return db.Delete(&datas).Error
-	})
+	db := m.conn
+	if tx != nil {
+		db = tx
+	}
+	err := db.WithContext(ctx).Delete(&datas).Error
 
 	return err
 }
 
 // deprecated. recommend add a transaction in service context instead of using this
 func (m *defaultUserPreferencesModel) Transaction(ctx context.Context, fn func(db *gorm.DB) error) error {
-	return m.TransactCtx(ctx, fn)
-}
-
-func (m *defaultUserPreferencesModel) formatPrimary(primary interface{}) string {
-	return fmt.Sprintf("%s%v", cacheUserPreferencesUserIdPrefix, primary)
-}
-
-func (m *defaultUserPreferencesModel) queryPrimary(conn *gorm.DB, v, primary interface{}) error {
-	return conn.Model(&UserPreferences{}).Where("`user_id` = ?", primary).Take(v).Error
+	return m.conn.WithContext(ctx).Transaction(fn)
 }

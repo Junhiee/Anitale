@@ -5,19 +5,11 @@ package model
 import (
 	"database/sql"
 	"context"
-	"errors"
-	"fmt"
+	"github.com/SpectatorNan/gorm-zero/gormc"
+
 	"time"
 
-	"github.com/SpectatorNan/gorm-zero/gormc"
-	"github.com/SpectatorNan/gorm-zero/gormc/batchx"
-	"github.com/zeromicro/go-zero/core/stores/cache"
 	"gorm.io/gorm"
-)
-
-var (
-	cacheUserRoleAssignmentsAssignmentIdPrefix = "cache:userRoleAssignments:assignmentId:"
-	cacheUserRoleAssignmentsUserIdRoleIdPrefix = "cache:userRoleAssignments:userId:roleId:"
 )
 
 type (
@@ -36,7 +28,7 @@ type (
 	}
 
 	defaultUserRoleAssignmentsModel struct {
-		gormc.CachedConn
+		conn  *gorm.DB
 		table string
 	}
 
@@ -52,56 +44,34 @@ func (UserRoleAssignments) TableName() string {
 	return "`user_role_assignments`"
 }
 
-func newUserRoleAssignmentsModel(conn *gorm.DB, c cache.CacheConf) *defaultUserRoleAssignmentsModel {
+func newUserRoleAssignmentsModel(conn *gorm.DB) *defaultUserRoleAssignmentsModel {
 	return &defaultUserRoleAssignmentsModel{
-		CachedConn: gormc.NewConn(conn, c),
-		table:      "`user_role_assignments`",
+		conn:  conn,
+		table: "`user_role_assignments`",
 	}
-}
-
-func (m *defaultUserRoleAssignmentsModel) GetCacheKeys(data *UserRoleAssignments) []string {
-	if data == nil {
-		return []string{}
-	}
-	userRoleAssignmentsAssignmentIdKey := fmt.Sprintf("%s%v", cacheUserRoleAssignmentsAssignmentIdPrefix, data.AssignmentId)
-	userRoleAssignmentsUserIdRoleIdKey := fmt.Sprintf("%s%v:%v", cacheUserRoleAssignmentsUserIdRoleIdPrefix, data.UserId, data.RoleId)
-	cacheKeys := []string{
-		userRoleAssignmentsAssignmentIdKey, userRoleAssignmentsUserIdRoleIdKey,
-	}
-	cacheKeys = append(cacheKeys, m.customCacheKeys(data)...)
-	return cacheKeys
 }
 
 func (m *defaultUserRoleAssignmentsModel) Insert(ctx context.Context, tx *gorm.DB, data *UserRoleAssignments) error {
-
-	err := m.ExecCtx(ctx, func(conn *gorm.DB) error {
-		db := conn
-		if tx != nil {
-			db = tx
-		}
-		return db.Save(&data).Error
-	}, m.GetCacheKeys(data)...)
+	db := m.conn
+	if tx != nil {
+		db = tx
+	}
+	err := db.WithContext(ctx).Save(&data).Error
 	return err
 }
 func (m *defaultUserRoleAssignmentsModel) BatchInsert(ctx context.Context, tx *gorm.DB, news []UserRoleAssignments) error {
-
-	err := batchx.BatchExecCtx(ctx, m, news, func(conn *gorm.DB) error {
-		db := conn
-		if tx != nil {
-			db = tx
-		}
-		return db.Create(&news).Error
-	})
+	db := m.conn
+	if tx != nil {
+		db = tx
+	}
+	err := db.WithContext(ctx).Create(&news).Error
 
 	return err
 }
 
 func (m *defaultUserRoleAssignmentsModel) FindOne(ctx context.Context, assignmentId uint64) (*UserRoleAssignments, error) {
-	userRoleAssignmentsAssignmentIdKey := fmt.Sprintf("%s%v", cacheUserRoleAssignmentsAssignmentIdPrefix, assignmentId)
 	var resp UserRoleAssignments
-	err := m.QueryCtx(ctx, &resp, userRoleAssignmentsAssignmentIdKey, func(conn *gorm.DB, v interface{}) error {
-		return conn.Model(&UserRoleAssignments{}).Where("`assignment_id` = ?", assignmentId).First(&resp).Error
-	})
+	err := m.conn.WithContext(ctx).Model(&UserRoleAssignments{}).Where("`assignment_id` = ?", assignmentId).Take(&resp).Error
 	switch err {
 	case nil:
 		return &resp, nil
@@ -113,14 +83,8 @@ func (m *defaultUserRoleAssignmentsModel) FindOne(ctx context.Context, assignmen
 }
 
 func (m *defaultUserRoleAssignmentsModel) FindOneByUserIdRoleId(ctx context.Context, userId sql.NullInt64, roleId sql.NullInt64) (*UserRoleAssignments, error) {
-	userRoleAssignmentsUserIdRoleIdKey := fmt.Sprintf("%s%v:%v", cacheUserRoleAssignmentsUserIdRoleIdPrefix, userId, roleId)
 	var resp UserRoleAssignments
-	err := m.QueryRowIndexCtx(ctx, &resp, userRoleAssignmentsUserIdRoleIdKey, m.formatPrimary, func(conn *gorm.DB, v interface{}) (interface{}, error) {
-		if err := conn.Model(&UserRoleAssignments{}).Where("`user_id` = ? and `role_id` = ?", userId, roleId).Take(&resp).Error; err != nil {
-			return nil, err
-		}
-		return resp.AssignmentId, nil
-	}, m.queryPrimary)
+	err := m.conn.WithContext(ctx).Model(&UserRoleAssignments{}).Where("`user_id` = ? and `role_id` = ?", userId, roleId).Take(&resp).Error
 	switch err {
 	case nil:
 		return &resp, nil
@@ -132,74 +96,44 @@ func (m *defaultUserRoleAssignmentsModel) FindOneByUserIdRoleId(ctx context.Cont
 }
 
 func (m *defaultUserRoleAssignmentsModel) Update(ctx context.Context, tx *gorm.DB, data *UserRoleAssignments) error {
-	old, err := m.FindOne(ctx, data.AssignmentId)
-	if err != nil && errors.Is(err, ErrNotFound) {
-		return err
+	db := m.conn
+	if tx != nil {
+		db = tx
 	}
-	clearKeys := append(m.GetCacheKeys(old), m.GetCacheKeys(data)...)
-	err = m.ExecCtx(ctx, func(conn *gorm.DB) error {
-		db := conn
-		if tx != nil {
-			db = tx
-		}
-		return db.Save(data).Error
-	}, clearKeys...)
+	err := db.WithContext(ctx).Save(data).Error
 	return err
 }
 func (m *defaultUserRoleAssignmentsModel) BatchUpdate(ctx context.Context, tx *gorm.DB, olds, news []UserRoleAssignments) error {
-	clearData := make([]UserRoleAssignments, 0, len(olds)+len(news))
-	clearData = append(clearData, olds...)
-	clearData = append(clearData, news...)
-	err := batchx.BatchExecCtx(ctx, m, clearData, func(conn *gorm.DB) error {
-		db := conn
-		if tx != nil {
-			db = tx
-		}
-		return db.Save(&news).Error
-	})
+	db := m.conn
+	if tx != nil {
+		db = tx
+	}
+	err := db.WithContext(ctx).Save(&news).Error
 
 	return err
 }
 
 func (m *defaultUserRoleAssignmentsModel) Delete(ctx context.Context, tx *gorm.DB, assignmentId uint64) error {
-	data, err := m.FindOne(ctx, assignmentId)
-	if err != nil {
-		if errors.Is(err, ErrNotFound) {
-			return nil
-		}
-		return err
+	db := m.conn
+	if tx != nil {
+		db = tx
 	}
-	err = m.ExecCtx(ctx, func(conn *gorm.DB) error {
-		db := conn
-		if tx != nil {
-			db = tx
-		}
-		return db.Delete(&UserRoleAssignments{}, assignmentId).Error
-	}, m.GetCacheKeys(data)...)
+	err := db.WithContext(ctx).Delete(&UserRoleAssignments{}, assignmentId).Error
+
 	return err
 }
 
 func (m *defaultUserRoleAssignmentsModel) BatchDelete(ctx context.Context, tx *gorm.DB, datas []UserRoleAssignments) error {
-	err := batchx.BatchExecCtx(ctx, m, datas, func(conn *gorm.DB) error {
-		db := conn
-		if tx != nil {
-			db = tx
-		}
-		return db.Delete(&datas).Error
-	})
+	db := m.conn
+	if tx != nil {
+		db = tx
+	}
+	err := db.WithContext(ctx).Delete(&datas).Error
 
 	return err
 }
 
 // deprecated. recommend add a transaction in service context instead of using this
 func (m *defaultUserRoleAssignmentsModel) Transaction(ctx context.Context, fn func(db *gorm.DB) error) error {
-	return m.TransactCtx(ctx, fn)
-}
-
-func (m *defaultUserRoleAssignmentsModel) formatPrimary(primary interface{}) string {
-	return fmt.Sprintf("%s%v", cacheUserRoleAssignmentsAssignmentIdPrefix, primary)
-}
-
-func (m *defaultUserRoleAssignmentsModel) queryPrimary(conn *gorm.DB, v, primary interface{}) error {
-	return conn.Model(&UserRoleAssignments{}).Where("`assignment_id` = ?", primary).Take(v).Error
+	return m.conn.WithContext(ctx).Transaction(fn)
 }

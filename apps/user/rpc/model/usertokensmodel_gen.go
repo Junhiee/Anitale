@@ -5,18 +5,11 @@ package model
 import (
 	"database/sql"
 	"context"
-	"errors"
-	"fmt"
+	"github.com/SpectatorNan/gorm-zero/gormc"
+
 	"time"
 
-	"github.com/SpectatorNan/gorm-zero/gormc"
-	"github.com/SpectatorNan/gorm-zero/gormc/batchx"
-	"github.com/zeromicro/go-zero/core/stores/cache"
 	"gorm.io/gorm"
-)
-
-var (
-	cacheUserTokensUserIdPrefix = "cache:userTokens:userId:"
 )
 
 type (
@@ -34,7 +27,7 @@ type (
 	}
 
 	defaultUserTokensModel struct {
-		gormc.CachedConn
+		conn  *gorm.DB
 		table string
 	}
 
@@ -52,55 +45,34 @@ func (UserTokens) TableName() string {
 	return "`user_tokens`"
 }
 
-func newUserTokensModel(conn *gorm.DB, c cache.CacheConf) *defaultUserTokensModel {
+func newUserTokensModel(conn *gorm.DB) *defaultUserTokensModel {
 	return &defaultUserTokensModel{
-		CachedConn: gormc.NewConn(conn, c),
-		table:      "`user_tokens`",
+		conn:  conn,
+		table: "`user_tokens`",
 	}
-}
-
-func (m *defaultUserTokensModel) GetCacheKeys(data *UserTokens) []string {
-	if data == nil {
-		return []string{}
-	}
-	userTokensUserIdKey := fmt.Sprintf("%s%v", cacheUserTokensUserIdPrefix, data.UserId)
-	cacheKeys := []string{
-		userTokensUserIdKey,
-	}
-	cacheKeys = append(cacheKeys, m.customCacheKeys(data)...)
-	return cacheKeys
 }
 
 func (m *defaultUserTokensModel) Insert(ctx context.Context, tx *gorm.DB, data *UserTokens) error {
-
-	err := m.ExecCtx(ctx, func(conn *gorm.DB) error {
-		db := conn
-		if tx != nil {
-			db = tx
-		}
-		return db.Save(&data).Error
-	}, m.GetCacheKeys(data)...)
+	db := m.conn
+	if tx != nil {
+		db = tx
+	}
+	err := db.WithContext(ctx).Save(&data).Error
 	return err
 }
 func (m *defaultUserTokensModel) BatchInsert(ctx context.Context, tx *gorm.DB, news []UserTokens) error {
-
-	err := batchx.BatchExecCtx(ctx, m, news, func(conn *gorm.DB) error {
-		db := conn
-		if tx != nil {
-			db = tx
-		}
-		return db.Create(&news).Error
-	})
+	db := m.conn
+	if tx != nil {
+		db = tx
+	}
+	err := db.WithContext(ctx).Create(&news).Error
 
 	return err
 }
 
 func (m *defaultUserTokensModel) FindOne(ctx context.Context, userId uint64) (*UserTokens, error) {
-	userTokensUserIdKey := fmt.Sprintf("%s%v", cacheUserTokensUserIdPrefix, userId)
 	var resp UserTokens
-	err := m.QueryCtx(ctx, &resp, userTokensUserIdKey, func(conn *gorm.DB, v interface{}) error {
-		return conn.Model(&UserTokens{}).Where("`user_id` = ?", userId).First(&resp).Error
-	})
+	err := m.conn.WithContext(ctx).Model(&UserTokens{}).Where("`user_id` = ?", userId).Take(&resp).Error
 	switch err {
 	case nil:
 		return &resp, nil
@@ -112,74 +84,44 @@ func (m *defaultUserTokensModel) FindOne(ctx context.Context, userId uint64) (*U
 }
 
 func (m *defaultUserTokensModel) Update(ctx context.Context, tx *gorm.DB, data *UserTokens) error {
-	old, err := m.FindOne(ctx, data.UserId)
-	if err != nil && errors.Is(err, ErrNotFound) {
-		return err
+	db := m.conn
+	if tx != nil {
+		db = tx
 	}
-	clearKeys := append(m.GetCacheKeys(old), m.GetCacheKeys(data)...)
-	err = m.ExecCtx(ctx, func(conn *gorm.DB) error {
-		db := conn
-		if tx != nil {
-			db = tx
-		}
-		return db.Save(data).Error
-	}, clearKeys...)
+	err := db.WithContext(ctx).Save(data).Error
 	return err
 }
 func (m *defaultUserTokensModel) BatchUpdate(ctx context.Context, tx *gorm.DB, olds, news []UserTokens) error {
-	clearData := make([]UserTokens, 0, len(olds)+len(news))
-	clearData = append(clearData, olds...)
-	clearData = append(clearData, news...)
-	err := batchx.BatchExecCtx(ctx, m, clearData, func(conn *gorm.DB) error {
-		db := conn
-		if tx != nil {
-			db = tx
-		}
-		return db.Save(&news).Error
-	})
+	db := m.conn
+	if tx != nil {
+		db = tx
+	}
+	err := db.WithContext(ctx).Save(&news).Error
 
 	return err
 }
 
 func (m *defaultUserTokensModel) Delete(ctx context.Context, tx *gorm.DB, userId uint64) error {
-	data, err := m.FindOne(ctx, userId)
-	if err != nil {
-		if errors.Is(err, ErrNotFound) {
-			return nil
-		}
-		return err
+	db := m.conn
+	if tx != nil {
+		db = tx
 	}
-	err = m.ExecCtx(ctx, func(conn *gorm.DB) error {
-		db := conn
-		if tx != nil {
-			db = tx
-		}
-		return db.Delete(&UserTokens{}, userId).Error
-	}, m.GetCacheKeys(data)...)
+	err := db.WithContext(ctx).Delete(&UserTokens{}, userId).Error
+
 	return err
 }
 
 func (m *defaultUserTokensModel) BatchDelete(ctx context.Context, tx *gorm.DB, datas []UserTokens) error {
-	err := batchx.BatchExecCtx(ctx, m, datas, func(conn *gorm.DB) error {
-		db := conn
-		if tx != nil {
-			db = tx
-		}
-		return db.Delete(&datas).Error
-	})
+	db := m.conn
+	if tx != nil {
+		db = tx
+	}
+	err := db.WithContext(ctx).Delete(&datas).Error
 
 	return err
 }
 
 // deprecated. recommend add a transaction in service context instead of using this
 func (m *defaultUserTokensModel) Transaction(ctx context.Context, fn func(db *gorm.DB) error) error {
-	return m.TransactCtx(ctx, fn)
-}
-
-func (m *defaultUserTokensModel) formatPrimary(primary interface{}) string {
-	return fmt.Sprintf("%s%v", cacheUserTokensUserIdPrefix, primary)
-}
-
-func (m *defaultUserTokensModel) queryPrimary(conn *gorm.DB, v, primary interface{}) error {
-	return conn.Model(&UserTokens{}).Where("`user_id` = ?", primary).Take(v).Error
+	return m.conn.WithContext(ctx).Transaction(fn)
 }
