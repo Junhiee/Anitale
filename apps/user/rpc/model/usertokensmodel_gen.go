@@ -32,12 +32,11 @@ type (
 	}
 
 	UserTokens struct {
-		UserId       uint64         `gorm:"column:user_id;primary_key"` // 用户唯一标识，与users表的id关联
-		AccessToken  string         `gorm:"column:access_token"`        // 用户的访问令牌
-		RefreshToken sql.NullString `gorm:"column:refresh_token"`       // 用户的刷新令牌
-		ExpiresAt    sql.NullTime   `gorm:"column:expires_at"`          // 访问令牌的过期时间
-		CreatedAt    time.Time      `gorm:"column:created_at"`          // 令牌创建时间
-		UpdatedAt    time.Time      `gorm:"column:updated_at"`          // 令牌更新时间
+		UserId      uint64       `gorm:"column:user_id;primary_key"` // 用户唯一标识，与users表的id关联
+		AccessToken string       `gorm:"column:access_token"`        // 用户的访问令牌
+		ExpiresAt   sql.NullTime `gorm:"column:expires_at"`          // 访问令牌的过期时间
+		CreatedAt   time.Time    `gorm:"column:created_at"`          // 令牌创建时间
+		UpdatedAt   time.Time    `gorm:"column:updated_at"`          // 令牌更新时间
 	}
 )
 

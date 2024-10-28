@@ -51,7 +51,7 @@ message LoginUserResponse {
   bool success = 1;
   string message = 2;
   string access_token = 3;
-  string refresh_token = 4;
+  int64 expire = 4;
 }
 
 // 获取用户个人信息请求
@@ -71,7 +71,7 @@ message UpdateUserProfileRequest {
   string bio = 3;
   string avatar_url = 4;
   string birthday = 5;
-  uint32 gender_id = 6; // 使用数字代替 ENUM
+  string gender = 6; 
 }
 
 // 更新用户个人信息响应
@@ -124,7 +124,7 @@ message UserProfile {
   string bio = 3;
   string avatar_url = 4;
   string birthday = 5;
-  uint32 gender_id = 6;
+  string gender = 6;
   string loc = 7;
 }
 

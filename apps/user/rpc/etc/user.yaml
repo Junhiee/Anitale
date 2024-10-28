@@ -1,9 +1,14 @@
 Name: user.rpc
 ListenOn: 0.0.0.0:9003
-# Etcd:
-#   Hosts:
-#   - 127.0.0.1:2379
-#   Key: user.rpc
+# Auth: True
+# Redis:
+#   Host: 127.0.0.1:6379
+#   Key: user-rpc:jwt
+
+# JWT
+JwtAuth:
+  AccessSecret: ae0536f9-6450-4606-8e13-5a19ed505da0
+  AccessExpire: 31536000
 
 Mysql:
   Path: 127.0.0.1
@@ -16,3 +21,9 @@ Mysql:
   LogMode: "dev"
   LogZap: false
   Config: charset=utf8mb4&parseTime=True&loc=Local
+
+RedisConf:
+  Host: 127.0.0.1:6379
+  Pass: ""
+  Type: node
+  Tls: false
