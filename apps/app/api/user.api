@@ -1,7 +1,5 @@
 syntax = "v1"
 
-import "base.api"
-
 info (
 	title:   "用户API"
 	desc:    "用户API"
@@ -11,11 +9,46 @@ info (
 )
 
 type (
-	UserLoginReq  {}
-	UserInfoReq  {}
-	UserLoginResp  {}
-	UserInfoResp  {}
-	UserInfoUpdateReq  {}
-	UserInfoUpdateResp  {}
-)
+	User {
+		Id         uint64 `json:"id"`
+		UserName   string `json:"user_name"`
+		Email      string `json:"email"`
+		IsActive   bool   `json:"is_active"`
+		IsVerified bool   `json:"is_verified"`
+	}
 
+	UserProfile {
+		UserId    uint64 `json:"user_id"`
+		FullName  string `json:"full_name"`
+		Bio       string `json:"bio"`
+		AvatarUrl string `json:"avatar_url"`
+		Birthday  string `json:"birthday"`
+		Gender    string `json:"gender"`
+		Loc       string `json:"loc"`
+	}
+
+	UserLoginReq {
+		Email    string `json:"email"`
+		Password string `json:"password"`
+	}
+	UserLoginResp {
+		AccessToken string `json:"access_token"`
+		Expire      int64  `json:"expire"`
+	}
+
+	RegisterUserReq {
+		UserName string `json:"user_name"`
+		Email    string `json:"email"`
+		Password string `json:"password"`
+	}
+	RegisterUserResp {
+		User User `json:"user"`
+	}
+
+	GetUserProfileReq {
+		UserId uint64 `path:"user_id"`
+	}
+	GetUserProfileResp {
+		Profile UserProfile `json:"profile"`
+	}
+)

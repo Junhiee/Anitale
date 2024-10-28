@@ -19,7 +19,7 @@ info (
 	group:  anime
 )
 service anitale-api {
-	@handler GetAnimeList
+	@handler getAnimeList
 	get /anime (AnimeListReq) returns (AnimeListResp)
 }
 
@@ -28,7 +28,20 @@ service anitale-api {
 	group:  user
 )
 service anitale-api {
-	@handler UserLogin
-	post /login (UserLoginReq) returns (UserLoginResp)
+	@handler loginUser
+	post /user/login (UserLoginReq) returns (UserLoginResp)
+
+	@handler registerUser
+	post /user/register (RegisterUserReq) returns (RegisterUserResp)
+}
+
+@server (
+	prefix: /v1
+	group:  user
+	jwt:    JwtAuth
+)
+service anitale-api {
+	@handler getUserProfile
+	get /user/profile/:user_id (GetUserProfileReq) returns (GetUserProfileResp)
 }
 

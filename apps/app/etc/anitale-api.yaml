@@ -6,3 +6,13 @@ AnimeRpcConf:
   Endpoints:
     - 127.0.0.1:9001
   NonBlock: true
+
+UserRpcConf:
+  Endpoints:
+    - 127.0.0.1:9003
+  NonBlock: true
+
+
+# JWT
+JwtAuth:
+  AccessSecret: ae0536f9-6450-4606-8e13-5a19ed505da0

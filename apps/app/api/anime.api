@@ -1,9 +1,5 @@
 syntax = "v1"
 
-import (
-	"base.api"
-)
-
 info (
 	title:   "番组信息"
 	desc:    "番组信息"
@@ -21,14 +17,15 @@ type (
 	}
 	AnimeListReq {
 		Page      int64  `json:"page,defaule=1"`
-		PageSize  int32  `form:"page_size,default=20"`
-		Country   string `json:"country,optional"`
+		PageSize  int64  `form:"page_size,default=20"`
+		Region    string `json:"region,optional"`
 		Tag       string `json:"tag,optional"`
 		AnimeType string `json:"anime_type,optional"`
+		Year      int64  `json:"year,optional"`
+		Season    int64  `json:"season,optional"`
 		Sort      string `json:"sort,defaule=time"`
 	}
 	AnimeListResp {
-		Base
-		Data []*Anime `json:"data"`
+		Animes []*Anime `json:"animes"`
 	}
 )

@@ -12,15 +12,17 @@ type Anime struct {
 
 type AnimeListReq struct {
 	Page      int64  `json:"page,defaule=1"`
-	PageSize  int32  `form:"page_size,default=20"`
-	Country   string `json:"country,optional"`
+	PageSize  int64  `form:"page_size,default=20"`
+	Region    string `json:"region,optional"`
 	Tag       string `json:"tag,optional"`
 	AnimeType string `json:"anime_type,optional"`
+	Year      int64  `json:"year,optional"`
+	Season    int64  `json:"season,optional"`
+	Sort      string `json:"sort,defaule=time"`
 }
 
 type AnimeListResp struct {
-	Base
-	Data []*Anime `json:"data"`
+	Animes []*Anime `json:"animes"`
 }
 
 type Base struct {
@@ -28,20 +30,48 @@ type Base struct {
 	Msg  string `json:"msg"`
 }
 
-type UserInfoReq struct {
+type GetUserProfileReq struct {
+	UserId uint64 `path:"user_id"`
 }
 
-type UserInfoResp struct {
+type GetUserProfileResp struct {
+	Profile UserProfile `json:"profile"`
 }
 
-type UserInfoUpdateReq struct {
+type RegisterUserReq struct {
+	UserName string `json:"user_name"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
 }
 
-type UserInfoUpdateResp struct {
+type RegisterUserResp struct {
+	User User `json:"user"`
+}
+
+type User struct {
+	Id         uint64 `json:"id"`
+	UserName   string `json:"user_name"`
+	Email      string `json:"email"`
+	IsActive   bool   `json:"is_active"`
+	IsVerified bool   `json:"is_verified"`
 }
 
 type UserLoginReq struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
 }
 
 type UserLoginResp struct {
+	AccessToken string `json:"access_token"`
+	Expire      int64  `json:"expire"`
+}
+
+type UserProfile struct {
+	UserId    uint64 `json:"user_id"`
+	FullName  string `json:"full_name"`
+	Bio       string `json:"bio"`
+	AvatarUrl string `json:"avatar_url"`
+	Birthday  string `json:"birthday"`
+	Gender    string `json:"gender"`
+	Loc       string `json:"loc"`
 }
