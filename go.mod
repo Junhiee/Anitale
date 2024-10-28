@@ -4,10 +4,13 @@ go 1.22.2
 
 require (
 	github.com/SpectatorNan/gorm-zero v1.5.1
+	github.com/golang-jwt/jwt/v5 v5.2.1
 	github.com/golang/protobuf v1.5.4
 	github.com/pkg/errors v0.9.1
 	github.com/redis/go-redis/v9 v9.6.1
 	github.com/zeromicro/go-zero v1.7.2
+	github.com/zeromicro/x v0.0.0-20240408115609-8224c482b07e
+	golang.org/x/crypto v0.26.0
 	google.golang.org/grpc v1.67.0
 	google.golang.org/protobuf v1.35.1
 	gorm.io/gorm v1.25.11

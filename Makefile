@@ -4,7 +4,14 @@ mysql:
 	goctl model mysql ddl -c --home ./.template/1.7.0/ --src ./apps/anime/rpc/desc/sql/anime_tags.sql --dir ./apps/anime/rpc/model/ \
 	goctl model mysql ddl -c --home ./.template/1.7.0/ --src ./apps/anime/rpc/desc/sql/stats.sql --dir ./apps/anime/rpc/model/ \
 
-	goctl model mysql ddl -c --home ./.template/1.7.0/ --src ./apps/stats/rpc/desc/sql/stats.sql --dir ./apps/stats/rpc/model/ 
+	goctl model mysql ddl -c --home ./.template/1.7.0/ --src ./apps/stats/rpc/desc/sql/stats.sql --dir ./apps/stats/rpc/model/ \
+	
+	goctl model mysql ddl --home ./.template/1.7.0/ --src ./apps/user/rpc/desc/sql/user.sql --dir ./apps/user/rpc/model/ &
+	goctl model mysql ddl --home ./.template/1.7.0/ --src ./apps/user/rpc/desc/sql/user_roles.sql --dir ./apps/user/rpc/model/ &
+	goctl model mysql ddl --home ./.template/1.7.0/ --src ./apps/user/rpc/desc/sql/user_profiles.sql --dir ./apps/user/rpc/model/ &
+	goctl model mysql ddl --home ./.template/1.7.0/ --src ./apps/user/rpc/desc/sql/user_tokens.sql --dir ./apps/user/rpc/model/ &
+	goctl model mysql ddl --home ./.template/1.7.0/ --src ./apps/user/rpc/desc/sql/user_preferences.sql --dir ./apps/user/rpc/model/ &
+	goctl model mysql ddl --home ./.template/1.7.0/ --src ./apps/user/rpc/desc/sql/user_role_assignments.sql --dir ./apps/user/rpc/model/ 
 
 
 api:
