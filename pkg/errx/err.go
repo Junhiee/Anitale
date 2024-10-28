@@ -19,19 +19,19 @@ func (c *CustomError) Error() string {
 	return fmt.Sprintf("ErrCode:%d，ErrMsg:%s", c.code, c.msg)
 }
 
-func (c *CustomError) NewCustomCode(code uint32) *CustomError {
+func NewCustomCode(code uint32) *CustomError {
 	return &CustomError{
 		code: code,
 		msg:  GetMessage(code),
 	}
 }
 
-func (c *CustomError) NewCustomMsg(msg string) *CustomError {
-	return &CustomError{
-		code: c.code,
-		msg:  msg,
-	}
-}
+// func NewCustomMsg(code uint32) *CustomError {
+// 	return &CustomError{
+// 		code: code,
+// 		msg:  GetMessage(code),
+// 	}
+// }
 
 func NewCustomError(code uint32, msg string) *CustomError {
 	return &CustomError{
