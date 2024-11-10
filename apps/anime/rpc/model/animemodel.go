@@ -20,16 +20,27 @@ type (
 
 	customAnimeModel struct {
 		*defaultAnimeModel
+		Condition
+	}
+
+	Condition struct {
+		Region string
+		Tag    string
+		Format string
+		Sort   string
+
+		// 日期范围
+		StartDate *time.Time
+		EndDate   *time.Time
+
+		// 季度范围
+		StartMonth *time.Time
+		EndMonth   *time.Time
 	}
 
 	customAnimeLogicModel interface {
 		AnimeList(ctx context.Context, page int64, page_size int64, tx *gorm.DB) ([]Anime, error)
-		// PageByTag(ctx context.Context, tag string, page int64, page_size int64, tx *gorm.DB) ([]Anime, error)
-		PageByRegion(ctx context.Context, region string, page int64, page_size int64, tx *gorm.DB) ([]Anime, error)
-		PageByAnimeType(ctx context.Context, anime_type string, page int64, page_size int64, tx *gorm.DB) ([]Anime, error)
-		PageBySeasonDate(ctx context.Context, start_date time.Time, end_date time.Time, page int64, page_size int64, tx *gorm.DB) ([]Anime, error)
-		PageByCond(ctx context.Context, cond map[string]interface{}, page int64, page_size int64, anime_ids []int64, tx *gorm.DB) ([]Anime, error)
-		PageBySesson(ctx context.Context, startMonth int, endMonth int, page int64, page_size int64, tx *gorm.DB) ([]Anime, error)
+		PageByCondition(ctx context.Context, tx *gorm.DB, page int64, page_size int64, c Condition) ([]Anime, int64, error)
 	}
 )
 
@@ -57,134 +68,65 @@ func (m *customAnimeModel) AnimeList(ctx context.Context, page int64, page_size 
 	return animes, err
 }
 
-// 通过 region 分页
-func (m *customAnimeModel) PageByRegion(ctx context.Context, region string, page int64, page_size int64, tx *gorm.DB) ([]Anime, error) {
-	var animes []Anime
-
-	err := m.ExecNoCacheCtx(ctx, func(conn *gorm.DB) error {
-		return conn.Where("region = ?", region).Order("updated_at").Limit(int(page_size)).Offset(int((page - 1) * page_size)).Find(&animes).Error
-	})
-	return animes, err
-}
-
-// 通过 season 分页
-func (m *customAnimeModel) PageBySeasonDate(ctx context.Context, start_date time.Time, end_date time.Time, page int64, page_size int64, tx *gorm.DB) ([]Anime, error) {
-	var animes []Anime
-
-	/*
-		SELECT id, name, release_date FROM anime
-		WHERE release_date BETWEEN ? AND ?
-		ORDER BY release_date
-		LIMIT ? OFFSET ?`
-	*/
-	err := m.ExecNoCacheCtx(ctx, func(conn *gorm.DB) error {
-		return conn.Where("release_date BETWEEN ? AND ?", start_date, end_date).Order("updated_at").Limit(int(page_size)).Offset(int((page - 1) * page_size)).Find(&animes).Error
-	})
-
-	return animes, err
-}
-
-// 通过 anime_type 分页
-func (m *customAnimeModel) PageByAnimeType(ctx context.Context, anime_type string, page int64, page_size int64, tx *gorm.DB) ([]Anime, error) {
-	var animes []Anime
-
-	err := m.ExecNoCacheCtx(ctx, func(conn *gorm.DB) error {
-		return conn.Where("anime_type = ?", anime_type).Order("updated_at").Limit(int(page_size)).Offset(int((page - 1) * page_size)).Find(&animes).Error
-	})
-	return animes, err
-}
-
-type Conditon struct {
-	Region    string
-	AnimeType string
-}
-
 // 多条件查询
-func (m *customAnimeModel) PageByCond(ctx context.Context, cond map[string]interface{}, page int64, page_size int64, anime_ids []int64, tx *gorm.DB) ([]Anime, error) {
-	var animes []Anime
+func (m *customAnimeModel) PageByCondition(ctx context.Context, tx *gorm.DB, page int64, page_size int64, c Condition) ([]Anime, int64, error) {
+	var totalCount int64
+	var anime_list []Anime
 	var err error
-
-	query := tx.Model(&Anime{})
-
-	if region, ok := cond["region"].(string); ok && region != "" {
-		query = query.Where("region = ?", region)
-	}
-
-	if animeType, ok := cond["anime_type"].(string); ok && animeType != "" {
-		query = query.Where("anime_type = ?", animeType)
-	}
-
-	// 日期范围条件
-	if startDate, startOk := cond["start_date"].(time.Time); startOk {
-		if endDate, endOk := cond["end_date"].(time.Time); endOk {
-			query = query.Where("release_date BETWEEN ? AND ?", startDate, endDate)
+	err = m.QueryNoCacheCtx(ctx, &anime_list, func(conn *gorm.DB, v interface{}) error {
+		db := conn
+		if tx != nil {
+			db = tx
 		}
-	}
 
-	// 处理季度筛选条件（根据月份进行过滤）
-	if startMonth, startOk := cond["start_month"].(time.Time); startOk {
-		if endMonth, endOk := cond["end_month"].(time.Time); endOk {
-			query = query.Where("MONTH(release_date) BETWEEN ? AND ?", startMonth.Month(), endMonth.Month())
+		q := db.Model(&Anime{})
+
+		// 地区
+		if c.Region != "" {
+			q = q.Where("region = ?", c.Region)
 		}
-	}
 
-	// Anime ID 列表
-	if len(anime_ids) > 0 {
-		query = query.Where("anime_id IN ?", anime_ids)
-	}
+		// 动画种类
+		if c.Format != "" {
+			q = q.Where("format = ?", c.Format)
+		}
 
-	// 排序和分页
-	query = query.Order("updated_at").Limit(int(page_size)).Offset(int((page - 1) * page_size))
+		// 时间范围（发布日期）
+		if c.StartDate != nil && c.EndDate != nil && !c.StartDate.IsZero() && !c.EndDate.IsZero() {
+			q = q.Where("release_date BETWEEN ? AND ?", *c.StartDate, *c.EndDate)
+		}
 
-	// 执行查询
-	err = m.ExecNoCacheCtx(ctx, func(conn *gorm.DB) error {
-		return query.Find(&animes).Error
+		// 季度筛选条件（根据月份进行过滤）
+		if c.StartMonth != nil && c.EndMonth != nil && !c.StartMonth.IsZero() && !c.EndMonth.IsZero() {
+			q = q.Where("MONTH(release_date) BETWEEN ? AND ?", c.StartMonth.Month(), c.EndMonth.Month())
+		}
+
+		// 动画标签
+		if c.Tag != "" {
+			q.Joins("join anime_tags on anime_tags.anime_id = anime.anime_id").
+				Joins("join tags on tags.tag_id = anime_tags.tag_id").
+				Where("tag = ?", c.Tag)
+		}
+
+		// 获取 totalCount
+		err := q.Count(&totalCount).Error
+		if err != nil {
+			return err
+		}
+
+		// 排序 默认时间排序
+		if c.Sort == "hot" {
+			q.Joins("join stats on stats.anime_id = anime.anime_id").Order("hot DESC")
+		} else if c.Sort == "rating" {
+			q.Order("rating DESC")
+		} else {
+			q.Order("updated_at")
+		}
+
+		// 分页
+		q.Limit(int(page_size)).Offset(int((page - 1) * page_size))
+		return q.Find(&anime_list).Error
 	})
 
-	return animes, err
+	return anime_list, totalCount, err
 }
-
-// 通过 season 分页，返回该季度范围内的anime动画(所有年份)
-func (m *customAnimeModel) PageBySesson(ctx context.Context, startMonth int, endMonth int, page int64, page_size int64, tx *gorm.DB) ([]Anime, error) {
-	var animes []Anime
-
-	err := m.ExecNoCacheCtx(ctx, func(conn *gorm.DB) error {
-		// 使用 MONTH(release_date) 进行月份过滤，忽略年份
-		return conn.Where("MONTH(release_date) BETWEEN ? AND ?", startMonth, endMonth).
-			Order("updated_at").
-			Limit(int(page_size)).
-			Offset(int((page - 1) * page_size)).
-			Find(&animes).Error
-	})
-
-	return animes, err
-}
-
-// conditon := Conditon{
-// 	Region:    cond["region"].(string),
-// 	AnimeType: cond["anime_type"].(string),
-// }
-
-// if anime_ids == nil && cond["start_date"] == nil && cond["end_date"] == nil {
-// 	err = m.ExecNoCacheCtx(ctx, func(conn *gorm.DB) error {
-// 		return conn.Where(&conditon).Order("updated_at").Limit(int(page_size)).Offset(int((page - 1) * page_size)).Find(&animes).Error
-// 	})
-// }
-
-// if anime_ids == nil {
-// 	err = m.ExecNoCacheCtx(ctx, func(conn *gorm.DB) error {
-// 		return conn.Where(&conditon).Where("release_date BETWEEN ? AND ?", cond["start_date"], cond["end_date"]).Order("updated_at").Limit(int(page_size)).Offset(int((page - 1) * page_size)).Find(&animes).Error
-// 	})
-// }
-
-// if cond["start_date"] == nil && cond["end_date"] == nil {
-// 	err = m.ExecNoCacheCtx(ctx, func(conn *gorm.DB) error {
-// 		return conn.Where("anime_id IN ?", anime_ids).Where(&conditon).Order("updated_at").Limit(int(page_size)).Offset(int((page - 1) * page_size)).Find(&animes).Error
-// 	})
-// }
-
-// if anime_ids != nil && cond["start_date"] != nil && cond["end_date"] != nil {
-// 	err = m.ExecNoCacheCtx(ctx, func(conn *gorm.DB) error {
-// 		return conn.Where("anime_id IN ?", anime_ids).Where(&conditon).Where("release_date BETWEEN ? AND ?", cond["start_date"], cond["end_date"]).Order("updated_at").Limit(int(page_size)).Offset(int((page - 1) * page_size)).Find(&animes).Error
-// 	})
-// }

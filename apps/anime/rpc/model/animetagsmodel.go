@@ -2,6 +2,7 @@ package model
 
 import (
 	"context"
+	"github.com/SpectatorNan/gorm-zero/gormc"
 
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"gorm.io/gorm"
@@ -22,7 +23,7 @@ type (
 	}
 
 	customAnimeTagsLogicModel interface {
-		PageByTags(ctx context.Context, tag_id int64, tx *gorm.DB) ([]AnimeTags, error)
+		FindTagIdByAnimeId(ctx context.Context, animeId int64) ([]AnimeTags, error)
 	}
 )
 
@@ -40,12 +41,19 @@ func (m *defaultAnimeTagsModel) customCacheKeys(data *AnimeTags) []string {
 	return []string{}
 }
 
-// 通过 tag_id 查找 anime_id
-func (m *customAnimeTagsModel) PageByTags(ctx context.Context, tag_id int64, tx *gorm.DB) ([]AnimeTags, error) {
-	var anime_tags []AnimeTags
-	err := m.ExecNoCacheCtx(ctx, func(conn *gorm.DB) error {
-		return conn.Select("anime_id").Where("tag_id = ?", tag_id).Find(&anime_tags).Error
+// 通过 anime_id 查找 tag_id
+func (m *customAnimeTagsModel) FindTagIdByAnimeId(ctx context.Context, animeId int64) ([]AnimeTags, error) {
+	var resp []AnimeTags
+	var animeTags = AnimeTags{}
+	err := m.ExecCtx(ctx, func(conn *gorm.DB) error {
+		return conn.Model(&animeTags).Where("anime_id = ?", animeId).Find(&resp).Error
 	})
-
-	return anime_tags, err
+	switch err {
+	case nil:
+		return resp, nil
+	case gormc.ErrNotFound:
+		return nil, ErrNotFound
+	default:
+		return nil, err
+	}
 }

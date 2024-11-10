@@ -6,12 +6,40 @@ import "google/protobuf/timestamp.proto";
 
 option go_package = "/pb";
 
-message Item {
+service AnimeService {
+    // Anime
+    rpc AnimeList(AnimeListReq) returns (AnimeListResp);
+    rpc GetAnime(GetAnimeReq) returns (GetAnimeResp);
+    rpc AddAnime(AddAnimeReq) returns (AddAnimeResp);
+    rpc DeleteAnime(DeleteAnimeReq) returns (DeleteAnimeResp);
+    rpc UpdateAnime(UpdateAnimeReq) returns (UpdateAnimeResp);
+    rpc Rank(RankReq) returns (AnimeListResp);
+
+    // Anime Episodes
+    rpc GetEpisodeList(GetEpisodesReq) returns (GetEpisodeListResp);
+    rpc AddEpisodes(AddEpisodesReq) returns (AddEpisodesResp);
+    rpc UpdateEpisodes(UpdateEpisodesReq) returns (UpdateEpisodesResp);
+
+    // Anime Character
+    rpc GetCharacterList(GetCharacterReq) returns (GetCharacterListResp);     // 获取动画角色列表
+
+    // Anime Tag
+    rpc GetTags(TagReq) returns (TagResp);
+}
+
+// Rank
+message RankReq {
+    int64 page = 1;
+    int64 page_size = 2;
+}
+
+// Anime
+message Anime {
     int64 anime_id = 1;
     string title = 2;
     string desc = 3;
     string region = 4;
-    string anime_type = 5;
+    string format = 5;
     string img_url = 6;
     string studios = 7;
     string status = 8;
@@ -21,22 +49,36 @@ message Item {
     google.protobuf.Timestamp updated_at = 12;
     google.protobuf.Timestamp created_at = 13;
 }
+message AnimeListReq {
+    int64 page = 1;
+    int64 page_size = 2;
+    string tag = 3;
+    string format = 4;
+    string region = 5;
+    int64 year = 7;
+    int64 season = 8;
+    string sort = 9;
+}
+message AnimeListResp {
+    repeated Anime anime_list = 1;
+    int64 page = 2;
+    int64 page_size = 3;
+    int64 total_count = 4;
+    int64 total_pages = 5;
+}
 
-// 获得一条anime数据
 message GetAnimeReq {
     int64 anime_id = 1;
 }
-
 message GetAnimeResp {
-    Item anime = 1;
+    Anime anime = 1;
 }
 
-// 增加一条anime数据
 message AddAnimeReq {
     string title = 1;
     string desc = 2;
     string country = 3;
-    string anime_type = 4;
+    string format = 4;
     string img_url = 5;
     string studios = 6;
     string status = 7;
@@ -44,27 +86,23 @@ message AddAnimeReq {
     google.protobuf.Timestamp release_date = 9;
     google.protobuf.Timestamp update_date = 10;
 }
-
 message AddAnimeResp {
     int64 anime_id = 1;
 }
 
-// 删除一条anime数据
 message DeleteAnimeReq {
     int64 anime_id = 1;
 }
-
 message DeleteAnimeResp {
     int64 anime_id = 1;
 }
 
-// 修改一条anime数据
 message UpdateAnimeReq {
     int64 anime_id = 1;
     string title = 2;
     string desc = 3;
     string region = 4;
-    string anime_type = 5;
+    string format = 5;
     string img_url = 6;
     string studios = 7;
     string status = 8;
@@ -72,36 +110,92 @@ message UpdateAnimeReq {
     google.protobuf.Timestamp release_date = 10;
     google.protobuf.Timestamp update_date = 11;
 }
-
 message UpdateAnimeResp {
     int64 anime_id = 1;
 }
 
-
-message AnimeListReq {
-    int64 page = 1;
-    int64 page_size = 2;
-
-    string tag = 3;
-    string anime_type = 4;
-    string region = 5;
-    double rating = 6;
-    int64 year = 7;
-    int64 season = 8;
-    string sort = 9;
-    string sort_order = 10;
+// episodes
+message Episode {
+    int64 episode_id = 1;
+    int64 anime_id = 2;                         // 所属动画的ID，逻辑上指向 anime 表
+    int32 episode_number = 3;                   // 剧集的编号，如第几集
+    string title = 4;                           // 剧集标题
+    google.protobuf.Timestamp release_date = 5; // 放送事件
+    int32 duration = 6;                         // 剧集时长，单位为分钟
+    string synopsis = 7;                        // 剧集的内容概要
+    string video_url = 8;                       // 剧集的视频地址
 }
 
-message AnimeListResp {
-  repeated Item anime_list = 1;
+message GetEpisodesReq {
+    int64 anime_id = 1;
+    int64 episode_num = 2;
+}
+message GetEpisodeListResp {
+    int64 anime_id = 1;
+    repeated Episode episode = 2;
 }
 
-service Anime {
-    rpc GetAnime (GetAnimeReq) returns (GetAnimeResp);
-    rpc AddAnime(AddAnimeReq) returns (AddAnimeResp);
-    rpc DeleteAnime(DeleteAnimeReq) returns (DeleteAnimeResp);
-    rpc UpdateAnime(UpdateAnimeReq) returns (UpdateAnimeResp);
+message AddEpisodesReq {
+    int64 anime_id = 1;
+    string title = 2;
+    int32 episode_number = 3;
+    google.protobuf.Timestamp release_date = 4;
+    int32 duration = 5;
+    string synopsis = 6;
+    string video_url = 7;
+}
+message AddEpisodesResp {
+    int64 episode_id = 1;
+}
 
-    // 多条件分页查询
-    rpc AnimeList(AnimeListReq) returns (AnimeListResp);
+message UpdateEpisodesReq {
+    int64 episode_id = 1;
+    int64 anime_id = 2;
+    int32 episode_number = 3;
+    string title = 4;
+    google.protobuf.Timestamp release_date = 5;
+    int32 duration = 6;
+    string synopsis = 7;
+    string video_url = 8;
+}
+message UpdateEpisodesResp {
+    int64 update_id = 1;
+    int64 anime_id = 2;
+    int64 episode_id = 3;
+    string update_type = 4;         // 更新类型，值可为 new_episode(默认), season_update, general_update
+    string update_description = 5;  // 更新内容描述
+    google.protobuf.Timestamp updated_at = 6;
+}
+
+// Character
+message Character {
+    int64 character_id = 1;       // 角色的唯一标识
+    int64 anime_id = 2;           // 所属动画的 ID
+    string name = 3;              // 角色的名字
+    string role = 4;              // 角色类型，如 main, supporting, cameo
+    string description = 5;       // 角色的简介
+    string image_url = 6;         // 角色的图片 URL
+}
+message GetCharacterReq {
+    int64 anime_id = 1;           // 动画 ID，用于筛选该动画中的角色
+    string role = 2;              // 角色类型，可选值：main（主角）、supporting（配角）、cameo（客串），默认 supporting
+}
+message GetCharacterListResp {
+    repeated Character characters = 1;   // 角色列表
+    int64 total_count = 2;               // 符合条件的角色总数
+}
+
+
+// Tag
+message Tag {
+    int64 tag_id = 1;
+    string tag = 2;
+}
+
+message TagReq{
+    int64 anime_id = 1;
+}
+
+message TagResp {
+    repeated string tags = 1;
 }

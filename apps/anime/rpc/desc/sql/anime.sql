@@ -3,7 +3,7 @@ CREATE TABLE `anime` (
     `title` varchar(255) DEFAULT NULL COMMENT '标题',
     `desc` varchar(255) DEFAULT NULL COMMENT '简介',
     `region` varchar(255) DEFAULT NULL COMMENT '国家或地区',
-    `anime_type` varchar(50) DEFAULT NULL COMMENT '动画种类',
+    `format` varchar(50) DEFAULT NULL COMMENT '动画种类',
     `img_url` varchar(255) DEFAULT NULL COMMENT '图片地址',
     `studios` varchar(255) DEFAULT NULL COMMENT '工作室',
     `status` varchar(255) DEFAULT NULL COMMENT '动画状态',

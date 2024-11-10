@@ -43,7 +43,7 @@ type (
 		Title       sql.NullString  `gorm:"column:title"`                // 标题
 		Desc        sql.NullString  `gorm:"column:desc"`                 // 简介
 		Region      sql.NullString  `gorm:"column:region"`               // 国家或地区
-		AnimeType   sql.NullString  `gorm:"column:anime_type"`           // 动画种类
+		Format      sql.NullString  `gorm:"column:format"`               // 动画种类
 		ImgUrl      sql.NullString  `gorm:"column:img_url"`              // 图片地址
 		Studios     sql.NullString  `gorm:"column:studios"`              // 工作室
 		Status      sql.NullString  `gorm:"column:status"`               // 动画状态
