@@ -27,6 +27,15 @@ type (
 		Loc       string `json:"loc"`
 	}
 
+	UserSubscriptions {
+		SubscriptionId         int64  `json:"subscription_id"`
+		UserId                 uint64 `json:"user_id"`
+		AnimeId                int64  `json:"anime_id"`
+		SubscribedAt           string `json:"subscribed_at"`
+		NotificationPreference string `json:"notification_preference"`
+		Status                 string `json:"status"`
+	}
+
 	UserLoginReq {
 		Email    string `json:"email"`
 		Password string `json:"password"`
@@ -50,5 +59,13 @@ type (
 	}
 	GetUserProfileResp {
 		Profile UserProfile `json:"profile"`
+	}
+
+	UserSubscribeReq {
+		UserId  uint64 `json:"user_id"`
+		AnimeId int64  `json:"anime_id"`
+	}
+	UserSubscribeResp {
+		Subscriptions UserSubscriptions `json:"subscriptions"`
 	}
 )

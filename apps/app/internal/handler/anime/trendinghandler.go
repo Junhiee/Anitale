@@ -10,17 +10,17 @@ import (
 	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
-// 获取动画列表分页，根据指定条件进行筛选和排序
-func GetAnimeListHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+// 获取动画流行趋势数据，根据多个维度（如时间范围、地区、种类、格式
+func TrendingHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.AnimeListReq
+		var req types.TrendingReq
 		if err := httpx.Parse(r, &req); err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 			return
 		}
 
-		l := anime.NewGetAnimeListLogic(r.Context(), svcCtx)
-		resp, err := l.GetAnimeList(&req)
+		l := anime.NewTrendingLogic(r.Context(), svcCtx)
+		resp, err := l.Trending(&req)
 		if err != nil {
 			// code-data 响应格式
 			xhttp.JsonBaseResponseCtx(r.Context(), w, err)

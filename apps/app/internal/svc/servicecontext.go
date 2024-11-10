@@ -1,7 +1,7 @@
 package svc
 
 import (
-	"Anitale/apps/anime/rpc/anime"
+	"Anitale/apps/anime/rpc/animeservice"
 	"Anitale/apps/app/internal/config"
 	"Anitale/apps/user/rpc/userservice"
 
@@ -10,14 +10,14 @@ import (
 
 type ServiceContext struct {
 	Config   config.Config
-	AnimeRpc anime.Anime
+	AnimeRpc animeservice.AnimeService
 	UserRpc  userservice.UserService
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
 	return &ServiceContext{
 		Config:   c,
-		AnimeRpc: anime.NewAnime(zrpc.MustNewClient(c.AnimeRpcConf)),
+		AnimeRpc: animeservice.NewAnimeService(zrpc.MustNewClient(c.AnimeRpcConf)),
 		UserRpc:  userservice.NewUserService(zrpc.MustNewClient(c.UserRpcConf)),
 	}
 }

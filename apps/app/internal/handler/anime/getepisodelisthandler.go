@@ -10,17 +10,17 @@ import (
 	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
-// 获取动画列表分页，根据指定条件进行筛选和排序
-func GetAnimeListHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+// 获取动画剧集信息
+func GetEpisodeListHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.AnimeListReq
+		var req types.GetEpisodeReq
 		if err := httpx.Parse(r, &req); err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 			return
 		}
 
-		l := anime.NewGetAnimeListLogic(r.Context(), svcCtx)
-		resp, err := l.GetAnimeList(&req)
+		l := anime.NewGetEpisodeListLogic(r.Context(), svcCtx)
+		resp, err := l.GetEpisodeList(&req)
 		if err != nil {
 			// code-data 响应格式
 			xhttp.JsonBaseResponseCtx(r.Context(), w, err)

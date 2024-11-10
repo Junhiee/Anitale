@@ -1,26 +1,39 @@
 syntax = "v1"
 
 import (
-	"./api/base.api"
-	"./api/anime.api"
-	"./api/user.api"
+	"api/anime.api"
+	"api/user.api"
 )
 
 info (
-	title:   "Main API"
-	desc:    "Main API"
+	title:   "Anitale"
+	desc:    "Anitale Api"
 	author:  "HUI"
 	email:   "2943452655@qq.com"
 	version: "1.0"
 )
 
+// 动画api接口
 @server (
-	prefix: /v1
+	prefix: /v1/anime
 	group:  anime
 )
 service anitale-api {
+	@doc "获取动画列表分页，根据指定条件进行筛选和排序"
 	@handler getAnimeList
-	get /anime (AnimeListReq) returns (AnimeListResp)
+	get /list (AnimeListReq) returns (AnimeListResp)
+
+	@doc "获取动画流行趋势数据，根据多个维度（如时间范围、地区、种类、格式"
+	@handler trending
+	get /trending (TrendingReq) returns (TrendingResp)
+
+	@doc "获取动画角色信息"
+	@handler getCharacterList
+	get /:anime_id (GetCharacterReq) returns (GetCharacterListResp)
+
+	@doc "获取动画剧集信息"
+	@handler getEpisodeList
+	get /episode/:anime_id (GetEpisodeReq) returns (GetEpisodeListResp)
 }
 
 @server (
@@ -28,9 +41,11 @@ service anitale-api {
 	group:  user
 )
 service anitale-api {
+	@doc "登陆"
 	@handler loginUser
 	post /user/login (UserLoginReq) returns (UserLoginResp)
 
+	@doc "注册"
 	@handler registerUser
 	post /user/register (RegisterUserReq) returns (RegisterUserResp)
 }
@@ -41,7 +56,12 @@ service anitale-api {
 	jwt:    JwtAuth
 )
 service anitale-api {
+	@doc "获取个人信息"
 	@handler getUserProfile
 	get /user/profile/:user_id (GetUserProfileReq) returns (GetUserProfileResp)
+
+	@doc "用户订阅接口"
+	@handler userSubscribe
+	post /user/subscribe (UserSubscribeReq) returns (UserSubscribeResp)
 }
 

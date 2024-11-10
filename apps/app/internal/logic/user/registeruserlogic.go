@@ -36,7 +36,6 @@ func (l *RegisterUserLogic) RegisterUser(req *types.RegisterUserReq) (resp *type
 		return nil, err
 	}
 
-
 	resp.User = types.User{
 		Id:         items.User.Id,
 		Email:      req.Email,

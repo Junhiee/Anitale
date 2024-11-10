@@ -1,0 +1,978 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Anitale",
+    "description": "Anitale Api",
+    "version": "1.0"
+  },
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/anime/episode/{anime_id}": {
+      "get": {
+        "summary": "获取动画剧集信息",
+        "operationId": "getEpisodeList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GetEpisodeListResp"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "anime_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "episode_number",
+            "description": " 剧集编号，可选",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "anime"
+        ]
+      }
+    },
+    "/v1/anime/list": {
+      "get": {
+        "summary": "获取动画列表分页，根据指定条件进行筛选和排序",
+        "operationId": "getAnimeList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/AnimeListResp"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "page",
+            "description": " 页码，默认为 1",
+            "in": "query",
+            "required": true,
+            "type": "integer",
+            "format": "int64",
+            "default": "1"
+          },
+          {
+            "name": "page_size",
+            "description": " 每页显示的动画数量，默认为 10",
+            "in": "query",
+            "required": true,
+            "type": "integer",
+            "format": "int64",
+            "default": "10"
+          },
+          {
+            "name": "region",
+            "description": " 动画所在的国家或地区，可选",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "tag",
+            "description": " 动画标签，用于按标签筛选，可选",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "format",
+            "description": " 动画种类，例如 TV、OVA 等，可选",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "year",
+            "description": " 动画年份，用于按年份筛选，可选",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "season",
+            "description": " 动画季节（如 1 表示春季、2 表示夏季），可选",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "sort",
+            "description": " 排序方式，支持按热度 (hot) 或更新时间 (updated_time)，默认更新时间",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "default": "updated_time"
+          }
+        ],
+        "tags": [
+          "anime"
+        ],
+        "consumes": [
+          "multipart/form-data"
+        ]
+      }
+    },
+    "/v1/anime/trending": {
+      "get": {
+        "summary": "获取动画流行趋势数据，根据多个维度（如时间范围、地区、种类、格式",
+        "operationId": "trending",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/TrendingResp"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "since",
+            "description": " 获取的时间范围：weekly, monthly, yearly",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "default": "weekly"
+          },
+          {
+            "name": "region",
+            "description": " 地区筛选，支持不同地区的流行趋势",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "tag",
+            "description": " 动画种类：如动作、冒险等",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "format",
+            "description": " 动画格式：如 TV、OVA、电影等",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "anime"
+        ],
+        "consumes": [
+          "multipart/form-data"
+        ]
+      }
+    },
+    "/v1/anime/{anime_id}": {
+      "get": {
+        "summary": "获取动画角色信息",
+        "operationId": "getCharacterList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GetCharacterListResp"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "anime_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "role",
+            "description": " 角色类型，可选值：main（主角）、supporting（配角）、cameo（客串），默认 supporting",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "anime"
+        ]
+      }
+    },
+    "/v1/user/login": {
+      "post": {
+        "summary": "登陆",
+        "operationId": "loginUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/UserLoginResp"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UserLoginReq"
+            }
+          }
+        ],
+        "tags": [
+          "user"
+        ]
+      }
+    },
+    "/v1/user/profile/{user_id}": {
+      "get": {
+        "summary": "获取个人信息",
+        "operationId": "getUserProfile",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GetUserProfileResp"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "user"
+        ],
+        "security": [
+          {
+            "apiKey": []
+          }
+        ]
+      }
+    },
+    "/v1/user/register": {
+      "post": {
+        "summary": "注册",
+        "operationId": "registerUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/RegisterUserResp"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RegisterUserReq"
+            }
+          }
+        ],
+        "tags": [
+          "user"
+        ]
+      }
+    },
+    "/v1/user/subscribe": {
+      "post": {
+        "summary": "用户订阅接口",
+        "operationId": "userSubscribe",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/UserSubscribeResp"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UserSubscribeReq"
+            }
+          }
+        ],
+        "tags": [
+          "user"
+        ],
+        "security": [
+          {
+            "apiKey": []
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "Anime": {
+      "type": "object",
+      "properties": {
+        "anime_id": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 主键"
+        },
+        "title": {
+          "type": "string",
+          "description": " 标题"
+        },
+        "desc": {
+          "type": "string",
+          "description": " 简介"
+        },
+        "img_url": {
+          "type": "string",
+          "description": " 图片地址"
+        },
+        "region": {
+          "type": "string",
+          "description": " 国家或地区"
+        },
+        "format": {
+          "type": "string",
+          "description": " 动画种类"
+        },
+        "tag": {
+          "type": "string",
+          "description": " 动画标签"
+        },
+        "studios": {
+          "type": "string",
+          "description": " 工作室"
+        },
+        "status": {
+          "type": "string",
+          "description": " 动画状态"
+        },
+        "rating": {
+          "type": "number",
+          "format": "double",
+          "description": " 评分"
+        },
+        "release_date": {
+          "type": "string",
+          "description": " 推出日期"
+        },
+        "update_date": {
+          "type": "string",
+          "description": " 更新日期"
+        },
+        "updated_at": {
+          "type": "string",
+          "description": " 更新时间"
+        },
+        "created_at": {
+          "type": "string",
+          "description": " 创建时间"
+        }
+      },
+      "title": "Anime",
+      "required": [
+        "anime_id",
+        "title",
+        "desc",
+        "img_url",
+        "region",
+        "format",
+        "tag",
+        "studios",
+        "status",
+        "rating",
+        "release_date",
+        "update_date",
+        "updated_at",
+        "created_at"
+      ]
+    },
+    "AnimeListReq": {
+      "type": "object",
+      "properties": {
+        "page": {
+          "type": "integer",
+          "format": "int64",
+          "default": "1",
+          "description": " 页码，默认为 1"
+        },
+        "page_size": {
+          "type": "integer",
+          "format": "int64",
+          "default": "10",
+          "description": " 每页显示的动画数量，默认为 10"
+        },
+        "region": {
+          "type": "string",
+          "description": " 动画所在的国家或地区，可选"
+        },
+        "tag": {
+          "type": "string",
+          "description": " 动画标签，用于按标签筛选，可选"
+        },
+        "format": {
+          "type": "string",
+          "description": " 动画种类，例如 TV、OVA 等，可选"
+        },
+        "year": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 动画年份，用于按年份筛选，可选"
+        },
+        "season": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 动画季节（如 1 表示春季、2 表示夏季），可选"
+        },
+        "sort": {
+          "type": "string",
+          "default": "updated_time",
+          "description": " 排序方式，支持按热度 (hot) 或更新时间 (updated_time)，默认更新时间"
+        }
+      },
+      "title": "AnimeListReq",
+      "required": [
+        "page",
+        "page_size",
+        "sort"
+      ]
+    },
+    "AnimeListResp": {
+      "type": "object",
+      "properties": {
+        "anime_list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Anime"
+          },
+          "description": " 动画数据列表"
+        },
+        "page": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 当前页码"
+        },
+        "page_size": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 每页条目数"
+        },
+        "total_count": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 总记录数"
+        },
+        "total_pages": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 总页数"
+        }
+      },
+      "title": "AnimeListResp",
+      "required": [
+        "anime_list",
+        "page",
+        "page_size",
+        "total_count",
+        "total_pages"
+      ]
+    },
+    "Character": {
+      "type": "object",
+      "properties": {
+        "character_id": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 角色的唯一标识"
+        },
+        "anime_id": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 所属动画的 ID"
+        },
+        "name": {
+          "type": "string",
+          "description": " 角色的名字"
+        },
+        "role": {
+          "type": "string",
+          "description": " 角色类型，如 main, supporting, cameo"
+        },
+        "description": {
+          "type": "string",
+          "description": " 角色的简介"
+        },
+        "image_url": {
+          "type": "string",
+          "description": " 角色的图片 URL"
+        }
+      },
+      "title": "Character",
+      "required": [
+        "character_id",
+        "anime_id",
+        "name",
+        "role",
+        "description",
+        "image_url"
+      ]
+    },
+    "Episode": {
+      "type": "object",
+      "properties": {
+        "episode_id": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 剧集的唯一标识"
+        },
+        "anime_id": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 所属动画的 ID"
+        },
+        "episode_number": {
+          "type": "integer",
+          "format": "int32",
+          "description": " 剧集编号，如第几集"
+        },
+        "title": {
+          "type": "string",
+          "description": " 剧集标题"
+        },
+        "release_date": {
+          "type": "string",
+          "description": " 放送日期"
+        },
+        "duration": {
+          "type": "integer",
+          "format": "int32",
+          "description": " 剧集时长，单位为分钟"
+        },
+        "synopsis": {
+          "type": "string",
+          "description": " 剧集的内容概要"
+        },
+        "video_url": {
+          "type": "string",
+          "description": " 剧集视频的URL"
+        }
+      },
+      "title": "Episode",
+      "required": [
+        "episode_id",
+        "anime_id",
+        "episode_number",
+        "title",
+        "release_date",
+        "duration",
+        "synopsis",
+        "video_url"
+      ]
+    },
+    "GetCharacterListResp": {
+      "type": "object",
+      "properties": {
+        "characters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Character"
+          },
+          "description": " 角色列表"
+        },
+        "total_count": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 符合条件的角色总数"
+        }
+      },
+      "title": "GetCharacterListResp",
+      "required": [
+        "characters",
+        "total_count"
+      ]
+    },
+    "GetCharacterReq": {
+      "type": "object",
+      "properties": {
+        "role": {
+          "type": "string",
+          "description": " 角色类型，可选值：main（主角）、supporting（配角）、cameo（客串），默认 supporting"
+        }
+      },
+      "title": "GetCharacterReq"
+    },
+    "GetEpisodeListResp": {
+      "type": "object",
+      "properties": {
+        "episodes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Episode"
+          },
+          "description": " 剧集列表"
+        },
+        "total_count": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 符合条件的剧集总数"
+        }
+      },
+      "title": "GetEpisodeListResp",
+      "required": [
+        "episodes",
+        "total_count"
+      ]
+    },
+    "GetEpisodeReq": {
+      "type": "object",
+      "properties": {
+        "episode_number": {
+          "type": "integer",
+          "format": "int32",
+          "description": " 剧集编号，可选"
+        }
+      },
+      "title": "GetEpisodeReq"
+    },
+    "GetUserProfileReq": {
+      "type": "object",
+      "title": "GetUserProfileReq"
+    },
+    "GetUserProfileResp": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "$ref": "#/definitions/UserProfile"
+        }
+      },
+      "title": "GetUserProfileResp",
+      "required": [
+        "profile"
+      ]
+    },
+    "RegisterUserReq": {
+      "type": "object",
+      "properties": {
+        "user_name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      },
+      "title": "RegisterUserReq",
+      "required": [
+        "user_name",
+        "email",
+        "password"
+      ]
+    },
+    "RegisterUserResp": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "#/definitions/User"
+        }
+      },
+      "title": "RegisterUserResp",
+      "required": [
+        "user"
+      ]
+    },
+    "Trending": {
+      "type": "object",
+      "properties": {
+        "anime_id": {
+          "type": "integer",
+          "format": "int64",
+          "description": " 动画的 ID"
+        },
+        "title": {
+          "type": "string",
+          "description": " 动画的标题"
+        },
+        "rank": {
+          "type": "integer",
+          "format": "int32",
+          "description": " 排名"
+        },
+        "popularity": {
+          "type": "integer",
+          "format": "int32",
+          "description": " 热度"
+        },
+        "image_url": {
+          "type": "string",
+          "description": " 动画封面图片"
+        },
+        "region": {
+          "type": "string",
+          "description": " 动画所在地区"
+        },
+        "tag": {
+          "type": "string",
+          "description": " 动画种类"
+        },
+        "format": {
+          "type": "string",
+          "description": " 动画格式"
+        }
+      },
+      "title": "Trending",
+      "required": [
+        "anime_id",
+        "title",
+        "rank",
+        "popularity",
+        "image_url",
+        "region",
+        "tag",
+        "format"
+      ]
+    },
+    "TrendingReq": {
+      "type": "object",
+      "properties": {
+        "since": {
+          "type": "string",
+          "default": "weekly",
+          "description": " 获取的时间范围：weekly, monthly, yearly"
+        },
+        "region": {
+          "type": "string",
+          "description": " 地区筛选，支持不同地区的流行趋势"
+        },
+        "tag": {
+          "type": "string",
+          "description": " 动画种类：如动作、冒险等"
+        },
+        "format": {
+          "type": "string",
+          "description": " 动画格式：如 TV、OVA、电影等"
+        }
+      },
+      "title": "TrendingReq"
+    },
+    "TrendingResp": {
+      "type": "object",
+      "properties": {
+        "trending_list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Trending"
+          },
+          "description": " 动画流行趋势列表"
+        }
+      },
+      "title": "TrendingResp",
+      "required": [
+        "trending_list"
+      ]
+    },
+    "User": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "user_name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "is_active": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "is_verified": {
+          "type": "boolean",
+          "format": "boolean"
+        }
+      },
+      "title": "User",
+      "required": [
+        "id",
+        "user_name",
+        "email",
+        "is_active",
+        "is_verified"
+      ]
+    },
+    "UserLoginReq": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      },
+      "title": "UserLoginReq",
+      "required": [
+        "email",
+        "password"
+      ]
+    },
+    "UserLoginResp": {
+      "type": "object",
+      "properties": {
+        "access_token": {
+          "type": "string"
+        },
+        "expire": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "title": "UserLoginResp",
+      "required": [
+        "access_token",
+        "expire"
+      ]
+    },
+    "UserProfile": {
+      "type": "object",
+      "properties": {
+        "user_id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "full_name": {
+          "type": "string"
+        },
+        "bio": {
+          "type": "string"
+        },
+        "avatar_url": {
+          "type": "string"
+        },
+        "birthday": {
+          "type": "string"
+        },
+        "gender": {
+          "type": "string"
+        },
+        "loc": {
+          "type": "string"
+        }
+      },
+      "title": "UserProfile",
+      "required": [
+        "user_id",
+        "full_name",
+        "bio",
+        "avatar_url",
+        "birthday",
+        "gender",
+        "loc"
+      ]
+    },
+    "UserSubscribeReq": {
+      "type": "object",
+      "properties": {
+        "user_id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "anime_id": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "title": "UserSubscribeReq",
+      "required": [
+        "user_id",
+        "anime_id"
+      ]
+    },
+    "UserSubscribeResp": {
+      "type": "object",
+      "properties": {
+        "subscriptions": {
+          "$ref": "#/definitions/UserSubscriptions"
+        }
+      },
+      "title": "UserSubscribeResp",
+      "required": [
+        "subscriptions"
+      ]
+    },
+    "UserSubscriptions": {
+      "type": "object",
+      "properties": {
+        "subscription_id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "user_id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "anime_id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "subscribed_at": {
+          "type": "string"
+        },
+        "notification_preference": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        }
+      },
+      "title": "UserSubscriptions",
+      "required": [
+        "subscription_id",
+        "user_id",
+        "anime_id",
+        "subscribed_at",
+        "notification_preference",
+        "status"
+      ]
+    }
+  },
+  "securityDefinitions": {
+    "apiKey": {
+      "type": "apiKey",
+      "description": "Enter JWT Bearer token **_only_**",
+      "name": "Authorization",
+      "in": "header"
+    }
+  }
+}

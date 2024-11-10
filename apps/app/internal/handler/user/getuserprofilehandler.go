@@ -24,7 +24,7 @@ func GetUserProfileHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		if err != nil {
 			// code-data 响应格式
 			xhttp.JsonBaseResponseCtx(r.Context(), w, err)
-			
+
 		} else {
 			// code-data 响应格式
 			xhttp.JsonBaseResponseCtx(r.Context(), w, resp)
