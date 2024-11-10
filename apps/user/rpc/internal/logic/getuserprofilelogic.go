@@ -37,7 +37,7 @@ func (l *GetUserProfileLogic) GetUserProfile(in *pb.GetUserProfileRequest) (*pb.
 
 	// 用户不存在
 	if userProfile == nil {
-		return nil, errors.Wrapf(errx.NewCustomCode(errx.USER_NOT_FOUND_ERROR), "user_id:%d", in.UserId)
+		return nil, errors.Wrapf(errx.NewCustomCode(errx.USER_NOT_FOUND_ERROR), "user_id:%d, err:%v", in.UserId, err)
 	}
 
 	resp.Profile = &pb.UserProfile{

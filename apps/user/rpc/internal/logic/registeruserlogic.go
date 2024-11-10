@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"database/sql"
 
 	"Anitale/apps/user/rpc/internal/svc"
 	"Anitale/apps/user/rpc/model"
@@ -90,6 +91,10 @@ func (l *RegisterUserLogic) RegisterUser(in *pb.RegisterUserRequest) (*pb.Regist
 		// 插入个人信息表 user_profiles
 		err = l.svcCtx.UserProfilesModel.Insert(l.ctx, tx, &model.UserProfiles{
 			UserId: u.Id,
+			FullName: sql.NullString{
+				String: u.Username,
+				Valid:  true,
+			},
 		})
 		if err != nil && err != model.ErrNotFound {
 			return errors.Wrapf(errx.NewCustomCode(errx.DB_ERROR), "UserProfiles:%s,err:%v", in.Email, err)
