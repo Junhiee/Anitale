@@ -25,7 +25,6 @@ func NewGetUserPreferencesLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 
 // 获取用户偏好设置
 func (l *GetUserPreferencesLogic) GetUserPreferences(in *pb.GetUserPreferencesRequest) (*pb.GetUserPreferencesResponse, error) {
-	// todo: add your logic here and delete this line
 
 	return &pb.GetUserPreferencesResponse{}, nil
 }

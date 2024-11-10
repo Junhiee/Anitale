@@ -44,5 +44,4 @@ func TestMap(t *testing.T) {
 
 	m["b"] = "2"
 	fmt.Println(m)
-	
 }

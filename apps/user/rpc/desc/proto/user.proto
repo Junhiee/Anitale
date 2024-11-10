@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 package user;
+import "google/protobuf/timestamp.proto";
 
 option go_package = "/pb";
 
@@ -24,6 +25,9 @@ service UserService {
 
   // 获取用户偏好设置
   rpc GetUserPreferences (GetUserPreferencesRequest) returns (GetUserPreferencesResponse);
+
+  // 用户订阅
+  rpc UserSubscribe (UserSubscribeRequest) returns (UserSubscribeResponse);
 }
 
 // 用户注册请求
@@ -108,6 +112,17 @@ message UpdateUserPreferencesResponse {
   UserPreferences preferences = 3;
 }
 
+// 用户订阅
+message UserSubscribeRequest {
+  uint64 user_id = 1;
+  int64 anime_id = 2;
+}
+
+message UserSubscribeResponse {
+  UserSubscriptions subscription = 1;
+}
+
+
 // 用户信息
 message User {
   uint64 id = 1;
@@ -136,4 +151,14 @@ message UserPreferences {
   bool receive_newsletter = 4;
   bool receive_sms = 5;
   bool receive_push = 6;
+}
+
+// 用户订阅
+message UserSubscriptions {
+  int64 subscription_id = 1;
+  uint64 user_id = 2;
+  int64 anime_id = 3;
+  google.protobuf.Timestamp subscribed_at = 4;
+  string notification_preference = 5;
+  string status = 6;
 }

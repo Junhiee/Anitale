@@ -88,7 +88,7 @@ func (l *RegisterUserLogic) RegisterUser(in *pb.RegisterUserRequest) (*pb.Regist
 			return errors.Wrapf(errx.NewCustomCode(errx.DB_ERROR), "FindOneByEmail:%s,err:%v", in.Email, err)
 		}
 		// 插入个人信息表 user_profiles
-		err = l.svcCtx.UserProfiles.Insert(l.ctx, tx, &model.UserProfiles{
+		err = l.svcCtx.UserProfilesModel.Insert(l.ctx, tx, &model.UserProfiles{
 			UserId: u.Id,
 		})
 		if err != nil && err != model.ErrNotFound {

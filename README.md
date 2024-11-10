@@ -39,10 +39,15 @@ Anispider - 数据采集
     - [ ] 完成 anime api 2024/10/11 - /10/13
       - [x] 定义好普通用户的第一版 `/v1/anime` api 接口
       - [x] 完成 code-msg 结构以及业务错误码封装
+    - [ ] user rpc - api
+      - [x] login and register
+      - [ ] 个人信息管理
+      - [ ] 用户订阅
+      - [ ] 偏好设置
     - [ ] 日志文件
     - [ ] 消息队列 | 延迟队列
       - [ ] kafka
-      - [ ] asynq
+      - [x] asynq
 - [x] 前端知识学习 --- 2024/10/.*?
   - [x] vue
   - [x] router

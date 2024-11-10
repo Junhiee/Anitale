@@ -10,11 +10,13 @@ import (
 )
 
 type ServiceContext struct {
-	Config          config.Config
-	UserModel       model.UsersModel
-	UserTokensModel model.UserTokensModel
-	UserProfiles    model.UserProfilesModel
-	Conn            *gorm.DB
+	Config                 config.Config
+	UserModel              model.UsersModel
+	UserTokensModel        model.UserTokensModel
+	UserProfilesModel      model.UserProfilesModel
+	UserPreferencesModel   model.UserPreferencesModel
+	UserSubscriptionsModel model.UserSubscriptionsModel
+	Conn                   *gorm.DB
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -23,10 +25,11 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		log.Fatal(err)
 	}
 	return &ServiceContext{
-		Config:          c,
-		Conn:            conn,
-		UserModel:       model.NewUsersModel(conn),
-		UserTokensModel: model.NewUserTokensModel(conn),
-		UserProfiles: model.NewUserProfilesModel(conn),
+		Config:               c,
+		Conn:                 conn,
+		UserModel:            model.NewUsersModel(conn),
+		UserTokensModel:      model.NewUserTokensModel(conn),
+		UserPreferencesModel: model.NewUserPreferencesModel(conn),
+		UserProfilesModel:    model.NewUserProfilesModel(conn),
 	}
 }

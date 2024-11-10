@@ -3,8 +3,8 @@
 package model
 
 import (
-	"database/sql"
 	"context"
+	"database/sql"
 	"github.com/SpectatorNan/gorm-zero/gormc"
 
 	"time"

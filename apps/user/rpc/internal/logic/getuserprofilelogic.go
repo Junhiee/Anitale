@@ -30,7 +30,7 @@ func NewGetUserProfileLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Ge
 func (l *GetUserProfileLogic) GetUserProfile(in *pb.GetUserProfileRequest) (*pb.GetUserProfileResponse, error) {
 	var resp = &pb.GetUserProfileResponse{}
 	// 查找用户
-	userProfile, err := l.svcCtx.UserProfiles.FindOne(l.ctx, in.UserId)
+	userProfile, err := l.svcCtx.UserProfilesModel.FindOne(l.ctx, in.UserId)
 	if err != nil && err != model.ErrNotFound {
 		return nil, errors.Wrapf(errx.NewCustomCode(errx.DB_ERROR), "user_id:%d,err:%v", in.UserId, err)
 	}

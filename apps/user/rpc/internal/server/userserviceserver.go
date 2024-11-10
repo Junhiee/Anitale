@@ -58,3 +58,9 @@ func (s *UserServiceServer) GetUserPreferences(ctx context.Context, in *pb.GetUs
 	l := logic.NewGetUserPreferencesLogic(ctx, s.svcCtx)
 	return l.GetUserPreferences(in)
 }
+
+// 用户订阅
+func (s *UserServiceServer) UserSubscribe(ctx context.Context, in *pb.UserSubscribeRequest) (*pb.UserSubscribeResponse, error) {
+	l := logic.NewUserSubscribeLogic(ctx, s.svcCtx)
+	return l.UserSubscribe(in)
+}

@@ -29,6 +29,9 @@ type (
 	User                          = pb.User
 	UserPreferences               = pb.UserPreferences
 	UserProfile                   = pb.UserProfile
+	UserSubscribeRequest          = pb.UserSubscribeRequest
+	UserSubscribeResponse         = pb.UserSubscribeResponse
+	UserSubscriptions             = pb.UserSubscriptions
 
 	UserService interface {
 		// 用户注册
@@ -43,6 +46,8 @@ type (
 		UpdateUserPreferences(ctx context.Context, in *UpdateUserPreferencesRequest, opts ...grpc.CallOption) (*UpdateUserPreferencesResponse, error)
 		// 获取用户偏好设置
 		GetUserPreferences(ctx context.Context, in *GetUserPreferencesRequest, opts ...grpc.CallOption) (*GetUserPreferencesResponse, error)
+		// 用户订阅
+		UserSubscribe(ctx context.Context, in *UserSubscribeRequest, opts ...grpc.CallOption) (*UserSubscribeResponse, error)
 	}
 
 	defaultUserService struct {
@@ -90,4 +95,10 @@ func (m *defaultUserService) UpdateUserPreferences(ctx context.Context, in *Upda
 func (m *defaultUserService) GetUserPreferences(ctx context.Context, in *GetUserPreferencesRequest, opts ...grpc.CallOption) (*GetUserPreferencesResponse, error) {
 	client := pb.NewUserServiceClient(m.cli.Conn())
 	return client.GetUserPreferences(ctx, in, opts...)
+}
+
+// 用户订阅
+func (m *defaultUserService) UserSubscribe(ctx context.Context, in *UserSubscribeRequest, opts ...grpc.CallOption) (*UserSubscribeResponse, error) {
+	client := pb.NewUserServiceClient(m.cli.Conn())
+	return client.UserSubscribe(ctx, in, opts...)
 }

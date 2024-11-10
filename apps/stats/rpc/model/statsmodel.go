@@ -61,5 +61,5 @@ type AnimeHotScore struct {
 }
 
 func (m *customStatsModel) SetAnimeidToStats(ctx context.Context, anime_id int64, score float64) {
-	
+
 }

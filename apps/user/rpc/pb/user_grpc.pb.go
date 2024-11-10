@@ -25,6 +25,7 @@ const (
 	UserService_UpdateUserProfile_FullMethodName     = "/user.UserService/UpdateUserProfile"
 	UserService_UpdateUserPreferences_FullMethodName = "/user.UserService/UpdateUserPreferences"
 	UserService_GetUserPreferences_FullMethodName    = "/user.UserService/GetUserPreferences"
+	UserService_UserSubscribe_FullMethodName         = "/user.UserService/UserSubscribe"
 )
 
 // UserServiceClient is the client API for UserService service.
@@ -45,6 +46,8 @@ type UserServiceClient interface {
 	UpdateUserPreferences(ctx context.Context, in *UpdateUserPreferencesRequest, opts ...grpc.CallOption) (*UpdateUserPreferencesResponse, error)
 	// 获取用户偏好设置
 	GetUserPreferences(ctx context.Context, in *GetUserPreferencesRequest, opts ...grpc.CallOption) (*GetUserPreferencesResponse, error)
+	// 用户订阅
+	UserSubscribe(ctx context.Context, in *UserSubscribeRequest, opts ...grpc.CallOption) (*UserSubscribeResponse, error)
 }
 
 type userServiceClient struct {
@@ -115,6 +118,16 @@ func (c *userServiceClient) GetUserPreferences(ctx context.Context, in *GetUserP
 	return out, nil
 }
 
+func (c *userServiceClient) UserSubscribe(ctx context.Context, in *UserSubscribeRequest, opts ...grpc.CallOption) (*UserSubscribeResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UserSubscribeResponse)
+	err := c.cc.Invoke(ctx, UserService_UserSubscribe_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServiceServer is the server API for UserService service.
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility.
@@ -133,6 +146,8 @@ type UserServiceServer interface {
 	UpdateUserPreferences(context.Context, *UpdateUserPreferencesRequest) (*UpdateUserPreferencesResponse, error)
 	// 获取用户偏好设置
 	GetUserPreferences(context.Context, *GetUserPreferencesRequest) (*GetUserPreferencesResponse, error)
+	// 用户订阅
+	UserSubscribe(context.Context, *UserSubscribeRequest) (*UserSubscribeResponse, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -160,6 +175,9 @@ func (UnimplementedUserServiceServer) UpdateUserPreferences(context.Context, *Up
 }
 func (UnimplementedUserServiceServer) GetUserPreferences(context.Context, *GetUserPreferencesRequest) (*GetUserPreferencesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserPreferences not implemented")
+}
+func (UnimplementedUserServiceServer) UserSubscribe(context.Context, *UserSubscribeRequest) (*UserSubscribeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserSubscribe not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 func (UnimplementedUserServiceServer) testEmbeddedByValue()                     {}
@@ -290,6 +308,24 @@ func _UserService_GetUserPreferences_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_UserSubscribe_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserSubscribeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).UserSubscribe(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_UserSubscribe_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).UserSubscribe(ctx, req.(*UserSubscribeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserService_ServiceDesc is the grpc.ServiceDesc for UserService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -320,6 +356,10 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetUserPreferences",
 			Handler:    _UserService_GetUserPreferences_Handler,
+		},
+		{
+			MethodName: "UserSubscribe",
+			Handler:    _UserService_UserSubscribe_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
