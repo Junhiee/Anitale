@@ -74,8 +74,9 @@ message UpdateUserProfileRequest {
   string full_name = 2;
   string bio = 3;
   string avatar_url = 4;
-  string birthday = 5;
+  google.protobuf.Timestamp birthday = 5;
   string gender = 6; 
+  string loc = 7;
 }
 
 // 更新用户个人信息响应
@@ -119,7 +120,12 @@ message UserSubscribeRequest {
 }
 
 message UserSubscribeResponse {
-  UserSubscriptions subscription = 1;
+    int64 subscription_id = 1;
+    uint64 user_id = 2;
+    int64 anime_id = 3;
+    google.protobuf.Timestamp subscribed_at = 4;
+    string notification_preference = 5;
+    string status = 6;
 }
 
 
@@ -138,7 +144,7 @@ message UserProfile {
   string full_name = 2;
   string bio = 3;
   string avatar_url = 4;
-  string birthday = 5;
+  google.protobuf.Timestamp birthday = 5;
   string gender = 6;
   string loc = 7;
 }
@@ -154,11 +160,11 @@ message UserPreferences {
 }
 
 // 用户订阅
-message UserSubscriptions {
-  int64 subscription_id = 1;
-  uint64 user_id = 2;
-  int64 anime_id = 3;
-  google.protobuf.Timestamp subscribed_at = 4;
-  string notification_preference = 5;
-  string status = 6;
-}
+//message UserSubscriptions {
+//  int64 subscription_id = 1;
+//  uint64 user_id = 2;
+//  int64 anime_id = 3;
+//  google.protobuf.Timestamp subscribed_at = 4;
+//  string notification_preference = 5;
+//  string status = 6;
+//}

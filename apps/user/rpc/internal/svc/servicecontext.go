@@ -25,11 +25,12 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		log.Fatal(err)
 	}
 	return &ServiceContext{
-		Config:               c,
-		Conn:                 conn,
-		UserModel:            model.NewUsersModel(conn),
-		UserTokensModel:      model.NewUserTokensModel(conn),
-		UserPreferencesModel: model.NewUserPreferencesModel(conn),
-		UserProfilesModel:    model.NewUserProfilesModel(conn),
+		Config:                 c,
+		Conn:                   conn,
+		UserModel:              model.NewUsersModel(conn),
+		UserTokensModel:        model.NewUserTokensModel(conn),
+		UserPreferencesModel:   model.NewUserPreferencesModel(conn),
+		UserSubscriptionsModel: model.NewUserSubscriptionsModel(conn),
+		UserProfilesModel:      model.NewUserProfilesModel(conn),
 	}
 }

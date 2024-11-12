@@ -1,6 +1,7 @@
 package main
 
 import (
+	"Anitale/pkg/interceptor"
 	"flag"
 	"fmt"
 
@@ -8,7 +9,6 @@ import (
 	"Anitale/apps/user/rpc/internal/server"
 	"Anitale/apps/user/rpc/internal/svc"
 	"Anitale/apps/user/rpc/pb"
-	"Anitale/pkg/interceptor"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/service"
@@ -34,9 +34,8 @@ func main() {
 		}
 	})
 
-	// 错误处理拦截器
+	// 错误处理
 	s.AddUnaryInterceptors(interceptor.LoggerInterceptor)
-
 	defer s.Stop()
 
 	fmt.Printf("Starting rpc server at %s...\n", c.ListenOn)

@@ -1,6 +1,7 @@
 package model
 
 import (
+	"context"
 	"gorm.io/gorm"
 )
 
@@ -19,6 +20,8 @@ type (
 	}
 
 	customUserSubscriptionsLogicModel interface {
+		IsSubscribed(ctx context.Context, userId uint64, animeId int64) (bool, error)
+		DeleteByAnimeIdAndUserId(ctx context.Context, userId uint64, animeId int64) error
 	}
 )
 
@@ -27,4 +30,32 @@ func NewUserSubscriptionsModel(conn *gorm.DB) UserSubscriptionsModel {
 	return &customUserSubscriptionsModel{
 		defaultUserSubscriptionsModel: newUserSubscriptionsModel(conn),
 	}
+}
+
+// IsSubscribed 判断用户是否已经订阅
+func (m *customUserSubscriptionsModel) IsSubscribed(ctx context.Context, userId uint64, animeId int64) (bool, error) {
+	var count int64
+	err := m.conn.WithContext(ctx).Model(&UserSubscriptions{}).
+		Where("user_id = ? AND anime_id = ? AND status = 'active'", userId, animeId).
+		Count(&count).Error
+
+	// 如果 count == 0，表示没有找到符合条件的记录，返回 false。
+	// 如果 count > 0，表示用户已订阅该动画，返回 true
+	if err != nil {
+		return false, err
+	}
+
+	return count > 0, nil
+}
+
+func (m *customUserSubscriptionsModel) DeleteByAnimeIdAndUserId(ctx context.Context, userId uint64, animeId int64) error {
+	err := m.conn.WithContext(ctx).
+		Where("user_id = ? AND anime_id = ?", userId, animeId).
+		Delete(&UserSubscriptions{}).Error
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

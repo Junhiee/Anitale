@@ -31,7 +31,6 @@ type (
 	UserProfile                   = pb.UserProfile
 	UserSubscribeRequest          = pb.UserSubscribeRequest
 	UserSubscribeResponse         = pb.UserSubscribeResponse
-	UserSubscriptions             = pb.UserSubscriptions
 
 	UserService interface {
 		// 用户注册
